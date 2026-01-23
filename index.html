@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Invitation - Maeve & Romain</title>
+    <title>Invitation Maëva & Romain</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -11,7 +11,7 @@
     <div class="viewport">
         <header class="header" id="header">
             <h1 class="title">VOUS AVEZ REÇU<br>UNE INVITATION</h1>
-            <p class="subtitle">SCROLLEZ POUR DÉCOUVRIR</p>
+            <p class="subtitle" id="instruction">CLIQUEZ SUR L'ENVELOPPE POUR L'OUVRIR</p>
         </header>
 
         <div class="envelope" id="envelope">
@@ -19,12 +19,13 @@
             
             <div class="card" id="card">
                 <div class="card-inner">
-                    <h2 class="names">MAEVE + ROMAIN</h2>
+                    <h2 class="names">MAËVA & ROMAIN</h2>
                     <div class="details">
                         <p>Nous sommes heureux de vous inviter à célébrer notre union.</p>
-                        <div class="photo-placeholder">PHOTO HD À VENIR</div>
+                        <div class="photo-hd">PHOTO HD À VENIR</div>
                         <p>Le 25 Juin 2026 à Paris</p>
                         <div class="scroll-spacer"></div>
+                        <p class="footer-note">Scrollez pour découvrir la suite...</p>
                     </div>
                 </div>
             </div>
@@ -33,6 +34,14 @@
             <div class="env-back"></div>
         </div>
     </div>
+
+    <svg width="0" height="0" style="position: absolute;">
+      <defs>
+        <clipPath id="roundedFlap" clipPathUnits="objectBoundingBox">
+          <path d="M 0,0 L 1,0 L 0.56,0.92 C 0.53,0.99 0.47,0.99 0.44,0.92 L 0,0 Z" />
+        </clipPath>
+      </defs>
+    </svg>
 
     <script src="script.js"></script>
 </body>
