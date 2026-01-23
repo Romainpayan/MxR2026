@@ -7,16 +7,16 @@ let isAnimationComplete = false;
 env.addEventListener("click", () => {
     if (isAnimationComplete) return;
 
-    // 1. Descente
+    // 1. Descente (plus haute maintenant)
     env.classList.add("is-descended");
     header.style.opacity = "0";
 
-    // 2. Ouverture (1s de délai)
+    // 2. Ouverture
     setTimeout(() => {
         env.classList.add("is-opened");
     }, 1000);
 
-    // 3. Montée à -20px avec bounce (1.6s de délai)
+    // 3. Bounce de la carte
     setTimeout(() => {
         card.classList.add("is-visible");
         isAnimationComplete = true;
@@ -34,6 +34,5 @@ window.addEventListener("scroll", () => {
     const maxScroll = document.body.scrollHeight - vh;
     const progress = scrollY / maxScroll;
     
-    // On part bien de -20px et on monte
     card.style.transform = `translateY(calc(-20px - ${progress * 150}%))`;
 });
