@@ -27,17 +27,20 @@ body {
 
 .header {
     position: absolute;
-    top: 15%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     width: 100%;
     text-align: center;
-    color: black; 
-    z-index: 100;
+    color: #fff;
+    z-index: 1000; 
     opacity: 0; 
     transition: opacity 0.8s ease;
+    pointer-events: none;
 }
 
-.title { font-size: 1.2rem; letter-spacing: 2px; text-transform: uppercase; margin: 0; }
-.subtitle { font-size: 0.75rem; opacity: 0.7; margin-top: 10px; }
+.title { font-size: 1.2rem; letter-spacing: 2px; text-transform: uppercase; margin: 0; line-height: 1.4; }
+.subtitle { font-size: 0.75rem; opacity: 0.7; margin-top: 15px; }
 
 /* ENVELOPPE */
 .envelope {
@@ -47,60 +50,56 @@ body {
     width: 85vw;
     max-width: 350px;
     aspect-ratio: 350 / 230;
-    transform: translate(-50%, -50%) scale(3.5) rotate(0deg); 
+    transform: translate(-50%, -50%) scale(2.6); 
     transform-style: preserve-3d;
-    perspective: 1500px;
+    perspective: 2000px;
     cursor: pointer;
-    filter: drop-shadow(0 15px 30px rgba(0,0,0,0.5));
-    transition: top 0.5s cubic-bezier(0.2, 0, 0.2, 1), transform 0.5s cubic-bezier(0.2, 0, 0.2, 1);
-    
-    /* MODIFICATION : Durée passée à 2.4s (2x plus lent) */
+    filter: drop-shadow(0 25px 50px rgba(0,0,0,0.6));
+    z-index: 10;
+    /* L'ANIMATION DE DÉBUT EST ICI */
     animation: entranceSlide 2.4s cubic-bezier(0.19, 1, 0.22, 1) 0.5s backwards;
+    /* LA TRANSITION D'OUVERTURE */
+    transition: top 1.2s cubic-bezier(0.4, 0, 0.2, 1), transform 1.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .envelope.is-active {
-    top: 85%; 
-    transform: translate(-50%, -50%) scale(1.21) rotate(0deg);
+    top: 92%; 
+    transform: translate(-50%, -50%) scale(1.4);
 }
 
 .env-back {
     position: absolute;
     inset: 0;
-    background: var(--gold-deep);
+    background: url('https://raw.githubusercontent.com/Romainpayan/MxR2026/refs/heads/main/back.png') center/cover no-repeat;
     z-index: 1;
-    box-shadow: inset 0 0 50px rgba(0,0,0,0.5);
+    transform: translateZ(0px);
 }
 
 .card {
     position: absolute;
-    top: 5px;
-    left: 7.5%;
-    width: 85%;
+    top: 10px;
+    left: 5%; 
+    width: 90%; 
     background: white;
     z-index: 5;
-    border-radius: 12px;
-    transform: translateY(200%);
-    box-shadow: 0 8px 25px rgba(0,0,0,0.2);
-    transition: transform 1s cubic-bezier(0.16, 1, 0.3, 1.05);
+    border-radius: 8px;
+    transform: translateY(200%) translateZ(2px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    transition: transform 1.1s cubic-bezier(0.2, 0, 0.2, 1);
 }
 
-.card.is-visible {
-    transform: translateY(-20px);
-}
+.card.no-transition { transition: none !important; }
+.card.is-visible { transform: translateY(-15px) translateZ(2px); }
 
 .card-inner { padding: 30px 15px; text-align: center; color: #333; }
-.names { font-size: 1.4rem; margin: 0; border-bottom: 1px solid #eee; padding-bottom: 15px; }
-.photo-hd { height: 160px; background: #f0f0f0; margin: 15px 0; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #999; }
-.scroll-spacer { height: 800px; }
 
 .env-front {
     position: absolute;
     inset: 0;
     z-index: 10;
-    background: linear-gradient(135deg, var(--gold-main), var(--gold-shadow));
-    clip-path: polygon(0 0, 50% 55%, 100% 0, 100% 100%, 0 100%);
+    background: url('https://raw.githubusercontent.com/Romainpayan/MxR2026/refs/heads/main/front.png') center/cover no-repeat;
     pointer-events: none;
-    box-shadow: inset 0 2px 5px rgba(255,255,255,0.3), 0 5px 15px rgba(0,0,0,0.1);
+    transform: translateZ(4px);
 }
 
 .env-flap {
@@ -108,29 +107,25 @@ body {
     top: 0;
     left: 0;
     width: 100%;
-    height: 60%; 
-    background: var(--gold-main);
-    clip-path: url(#roundedFlap);
+    height: 100%; 
+    background: url('https://raw.githubusercontent.com/Romainpayan/MxR2026/refs/heads/main/flap.png') center top / 100% auto no-repeat;
     transform-origin: top;
-    z-index: 20;
-    box-shadow: 0 5px 10px rgba(0,0,0,0.25);
-    transition: transform 0.8s ease-in-out, background 0.3s, box-shadow 0.3s;
+    z-index: 20; 
+    transform-style: preserve-3d;
+    backface-visibility: visible;
+    transform: rotateX(0deg) translateZ(5px); 
+    /* Délai sur le z-index pour ne pas passer derrière trop tôt */
+    transition: transform 1.2s ease-in-out, z-index 0s 0.8s;
 }
 
 .envelope.is-opened .env-flap {
-    transform: rotateX(180deg);
-    background: var(--gold-shadow);
-    z-index: 2;
-    box-shadow: 0 -5px 15px rgba(0,0,0,0.2);
+    transform: rotateX(180deg) translateZ(1px); 
+    z-index: 2; 
+    filter: brightness(0.9);
 }
 
+/* LES KEYFRAMES POUR L'ANIMATION DE DÉBUT */
 @keyframes entranceSlide {
-    0% {
-        transform: translate(-100vw, 100vh) scale(3.5) rotate(-35deg);
-        opacity: 0;
-    }
-    100% {
-        transform: translate(-50%, -50%) scale(3.5) rotate(0deg);
-        opacity: 1;
-    }
+    0% { transform: translate(-100vw, 100vh) scale(2.6) rotate(-35deg); opacity: 0; }
+    100% { transform: translate(-50%, -50%) scale(2.6) rotate(0deg); opacity: 1; }
 }

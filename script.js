@@ -5,34 +5,29 @@ const card = document.getElementById("card");
 let isIntroFinished = false;
 let isAnimationComplete = false;
 
-// SÉQUENCE D'INTRODUCTION
 window.addEventListener('load', () => {
-    // On attend 3.1 secondes avant d'afficher le texte noir
+    // On attend la fin de l'animation CSS (2.4s + 0.5s) avant de montrer le texte
     setTimeout(() => {
         header.style.opacity = "1";
         isIntroFinished = true;
     }, 3100);
 });
 
-
-// SÉQUENCE AU CLIC
 env.addEventListener("click", () => {
     if (!isIntroFinished || isAnimationComplete) return;
 
-    // 1. DÉZOOME VIF (0.5s)
-    env.classList.add("is-active");
     header.style.opacity = "0";
+    env.classList.add("is-active"); 
+    env.classList.add("is-opened");
 
-    // 2. OUVERTURE (Démarre à 0.5s)
-    setTimeout(() => {
-        env.classList.add("is-opened");
-    }, 500);
-
-    // 3. REBOND DE LA CARTE (Délai total 1.2s)
     setTimeout(() => {
         card.classList.add("is-visible");
+    }, 600);
+
+    setTimeout(() => {
         isAnimationComplete = true;
-    }, 1200);
+        card.classList.add("no-transition");
+    }, 1700);
 });
 
 window.addEventListener("scroll", () => {
@@ -46,5 +41,7 @@ window.addEventListener("scroll", () => {
     const maxScroll = document.body.scrollHeight - vh;
     const progress = scrollY / maxScroll;
     
-    card.style.transform = `translateY(calc(-20px - ${progress * 150}%))`;
+    // Déplacement fluide au scroll
+    const moveY = -15 - (progress * 1500); 
+    card.style.transform = `translateY(${moveY}px) translateZ(2px)`;
 });
