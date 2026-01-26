@@ -29,8 +29,10 @@ body {
     width: 100%; text-align: center;
     color: #fff; z-index: 1000; 
     opacity: 0; transition: opacity 0.8s ease;
+    pointer-events: none;
 }
 
+/* ENVELOPPE */
 .envelope {
     position: absolute;
     top: 50%; left: 50%;
@@ -53,10 +55,11 @@ body {
 .env-back {
     position: absolute;
     inset: 0;
-    background: url('back.png') center/cover no-repeat;
+    background: url('https://raw.githubusercontent.com/Romainpayan/MxR2026/refs/heads/main/back.png') center/cover no-repeat;
     transform: translateZ(0px);
 }
 
+/* CARTE */
 .card {
     position: absolute;
     top: 10px; left: 50%;
@@ -66,6 +69,7 @@ body {
     transform: translate(-50%, 200%) translateZ(1px);
     box-shadow: 0 10px 30px rgba(0,0,0,0.2);
     transition: transform 1.2s cubic-bezier(0.34, 1.1, 0.64, 1);
+    overflow: hidden;
 }
 
 .card.is-visible { transform: translate(-50%, -30px) translateZ(1px); }
@@ -79,31 +83,29 @@ body {
 .env-front {
     position: absolute;
     inset: 0; z-index: 10;
-    background: url('front.png') center/cover no-repeat;
-    transform: translateZ(2px); /* Devant la carte et le fond */
+    background: url('https://raw.githubusercontent.com/Romainpayan/MxR2026/refs/heads/main/front.png') center/cover no-repeat;
+    transform: translateZ(2px);
 }
 
-/* RABAT CORRIGÉ */
+/* RABAT (FLAP) */
 .env-flap {
     position: absolute;
     inset: 0;
     transform-origin: top;
     z-index: 20;
     transform-style: preserve-3d;
-    /* On commence à 2.1px pour être au-dessus du front (2px) */
     transform: rotateX(0deg) translateZ(2.1px); 
     transition: transform 1s ease-in-out, z-index 0s 0.8s;
 }
 
 .envelope.is-opened .env-flap {
-    /* On finit à 0.1px pour être collé au back (0px) */
     transform: rotateX(180deg) translateZ(0.1px);
     z-index: 2;
 }
 
 .flap-outer, .flap-inner {
     position: absolute;
-    top: -1px; /* Décale pour boucher le gap à la pliure */
+    top: -1px; 
     left: 0;
     width: 100%;
     height: 100%;
@@ -111,14 +113,13 @@ body {
 }
 
 .flap-outer { 
-    background: url('flap.png') center top / 100% auto no-repeat; 
+    background: url('https://raw.githubusercontent.com/Romainpayan/MxR2026/refs/heads/main/flap.png') center top / 100% auto no-repeat; 
     z-index: 2; 
 }
 
 .flap-inner { 
-    background: url('lining.png') center top / 100% auto no-repeat; 
-    /* rotateX(180deg) car l'image est retournée, et scale pour boucher les bords */
-    transform: rotateX(180deg) scale(1.01); 
+    background: url('https://raw.githubusercontent.com/Romainpayan/MxR2026/refs/heads/main/lining.png') center bottom / 100% auto no-repeat; 
+    transform: rotateX(180deg) scale(1.02); 
     z-index: 1; 
 }
 
