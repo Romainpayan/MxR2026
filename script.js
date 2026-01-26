@@ -4,9 +4,13 @@ const card = document.getElementById("card");
 
 let isIntroFinished = false;
 let isAnimationComplete = false;
+let hasCentered = false;
 
 window.addEventListener('load', () => {
-    setTimeout(() => { header.style.opacity = "1"; isIntroFinished = true; }, 3100);
+    setTimeout(() => {
+        header.style.opacity = "1";
+        isIntroFinished = true;
+    }, 3100);
 });
 
 env.addEventListener("click", () => {
@@ -23,14 +27,11 @@ window.addEventListener("scroll", () => {
         return;
     }
     
-    const scrollY = window.scrollY;
-    
-    if (scrollY > 20 && scrollY < 400) {
+    if (window.scrollY > 15 && !hasCentered) {
+        hasCentered = true;
         card.classList.add("is-centered");
-        card.classList.remove("is-full");
-    } else if (scrollY >= 400) {
-        card.classList.add("is-full");
-    } else {
-        card.classList.remove("is-centered", "is-full");
+    } else if (window.scrollY < 10 && hasCentered) {
+        hasCentered = false;
+        card.classList.remove("is-centered");
     }
 });
