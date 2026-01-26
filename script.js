@@ -27,7 +27,6 @@ window.addEventListener("scroll", () => {
         return;
     }
     
-    // Animation de centrage au premier scroll
     if (window.scrollY > 15 && !hasCentered) {
         hasCentered = true;
         card.classList.add("is-centered");
