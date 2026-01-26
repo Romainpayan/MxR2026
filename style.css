@@ -115,12 +115,12 @@ body {
 }
 
 .flap-outer {
-    background: url('flap.png') center top / 100% auto no-repeat;
+    background: url('flap.png') center bottom / 100% auto no-repeat;
     z-index: 2;
 }
 
 .flap-inner {
-    background: url('lining.png') center top / 100% auto no-repeat;
+    background: url('lining.png') center bottom / 100% auto no-repeat;
     /* rotateX(180deg) pour l'avoir à l'endroit une fois ouvert */
     transform: rotateX(180deg) scale(1.02);
     z-index: 1;
