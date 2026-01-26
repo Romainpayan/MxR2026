@@ -4,6 +4,7 @@ const card = document.getElementById("card");
 
 let isIntroFinished = false;
 let isAnimationComplete = false;
+let hasCentered = false;
 
 window.addEventListener('load', () => {
     setTimeout(() => {
@@ -14,19 +15,10 @@ window.addEventListener('load', () => {
 
 env.addEventListener("click", () => {
     if (!isIntroFinished || isAnimationComplete) return;
-
     header.style.opacity = "0";
-    env.classList.add("is-active"); 
-    env.classList.add("is-opened");
-
-    setTimeout(() => {
-        card.classList.add("is-visible");
-    }, 600);
-
-    setTimeout(() => {
-        isAnimationComplete = true;
-        card.classList.add("no-transition");
-    }, 1700);
+    env.classList.add("is-active", "is-opened");
+    setTimeout(() => { card.classList.add("is-visible"); }, 600);
+    setTimeout(() => { isAnimationComplete = true; }, 1700);
 });
 
 window.addEventListener("scroll", () => {
@@ -35,11 +27,11 @@ window.addEventListener("scroll", () => {
         return;
     }
     
-    const scrollY = window.scrollY;
-    const vh = window.innerHeight;
-    const maxScroll = document.body.scrollHeight - vh;
-    const progress = scrollY / maxScroll;
-    
-    const moveY = -15 - (progress * 1500); 
-    card.style.transform = `translateY(${moveY}px) translateZ(2px)`;
+    if (window.scrollY > 15 && !hasCentered) {
+        hasCentered = true;
+        card.classList.add("is-centered");
+    } else if (window.scrollY < 10 && hasCentered) {
+        hasCentered = false;
+        card.classList.remove("is-centered");
+    }
 });
