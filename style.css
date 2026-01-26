@@ -24,19 +24,25 @@ body {
 
 .header {
     position: absolute;
-    top: 50%; left: 50%;
+    top: 50%;
+    left: 50%;
     transform: translate(-50%, -50%);
-    width: 100%; text-align: center;
-    color: #fff; z-index: 1000; 
-    opacity: 0; transition: opacity 0.8s ease;
+    width: 100%;
+    text-align: center;
+    color: #fff;
+    z-index: 1000; 
+    opacity: 0; 
+    transition: opacity 0.8s ease;
     pointer-events: none;
 }
 
 /* ENVELOPPE */
 .envelope {
     position: absolute;
-    top: 50%; left: 50%;
-    width: 85vw; max-width: 350px;
+    top: 50%;
+    left: 50%;
+    width: 85vw;
+    max-width: 350px;
     aspect-ratio: 350 / 230;
     transform: translate(-50%, -50%) scale(2.6); 
     transform-style: preserve-3d;
@@ -47,12 +53,8 @@ body {
     transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.envelope.is-active { 
-    top: 92%; 
-    transform: translate(-50%, -50%) scale(1.4); 
-}
+.envelope.is-active { top: 92%; transform: translate(-50%, -50%) scale(1.4); }
 
-/* DOS : Profondeur Zéro */
 .env-back {
     position: absolute;
     inset: 0;
@@ -60,16 +62,20 @@ body {
     transform: translateZ(0px);
 }
 
-/* CARTE : Juste devant le dos */
+/* CARTE */
 .card {
     position: absolute;
-    top: 10px; left: 50%;
-    width: 90%; aspect-ratio: 1 / 1.1; 
-    background: white; z-index: 5;
+    top: 10px;
+    left: 50%;
+    width: 90%;
+    aspect-ratio: 1 / 1.1; 
+    background: white;
+    z-index: 5;
     border-radius: 12px;
-    transform: translate(-50%, 200%) translateZ(1px); 
+    transform: translate(-50%, 200%) translateZ(1px);
     box-shadow: 0 10px 30px rgba(0,0,0,0.2);
     transition: transform 1.2s cubic-bezier(0.34, 1.1, 0.64, 1);
+    overflow: hidden;
 }
 
 .card.is-visible { transform: translate(-50%, -30px) translateZ(1px); }
@@ -80,52 +86,29 @@ body {
 .intro-text { font-size: 1.1rem; line-height: 1.4; color: #333; }
 .scroll-invite { margin-top: auto; color: #bbb; font-size: 0.75rem; text-transform: uppercase; }
 
-/* DEVANT : Couvre la carte */
 .env-front {
     position: absolute;
-    inset: 0; z-index: 10;
+    inset: 0;
+    z-index: 10;
     background: url('front.png') center/cover no-repeat;
-    transform: translateZ(2px); 
+    transform: translateZ(2px);
 }
 
-/* RABAT (FLAP) : Suppression du gap */
-.env-flap-container {
+/* RABAT V1 (FLAP UNIQUE) */
+.env-flap {
     position: absolute;
     inset: 0;
-    transform-origin: top center; /* Point de pivot précis */
+    background: url('flap.png') center top / 100% auto no-repeat;
+    transform-origin: top;
     z-index: 20;
-    transform-style: preserve-3d;
-    /* On le plaque contre le dos */
-    transform: rotateX(0deg) translateZ(0.2px); 
+    /* On utilise translateZ(2.1px) pour être juste au-dessus du front */
+    transform: rotateX(0deg) translateZ(2.1px); 
     transition: transform 1s ease-in-out, z-index 0s 0.8s;
 }
 
-.envelope.is-opened .env-flap-container {
-    transform: rotateX(180deg) translateZ(0.2px);
+.envelope.is-opened .env-flap {
+    transform: rotateX(180deg) translateZ(0.1px);
     z-index: 2;
-}
-
-.flap-outer, .flap-inner {
-    position: absolute;
-    top: -1.5px; /* Force le rabat à remonter légèrement pour couvrir le joint */
-    left: 0;
-    width: 100%;
-    height: 100%;
-    backface-visibility: hidden;
-}
-
-/* Face externe (Verte) */
-.flap-outer {
-    background: url('flap.png') center top / 100% auto no-repeat;
-    z-index: 2;
-}
-
-/* Face interne (Doublure) */
-.flap-inner {
-    background: url('lining.png') center top / 100% auto no-repeat;
-    /* Correction de la rotation + léger scale pour boucher les trous de transparence */
-    transform: rotateX(180deg) scale(1.02);
-    z-index: 1;
 }
 
 @keyframes entranceSlide {
