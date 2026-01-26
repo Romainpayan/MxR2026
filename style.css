@@ -24,25 +24,18 @@ body {
 
 .header {
     position: absolute;
-    top: 50%;
-    left: 50%;
+    top: 50%; left: 50%;
     transform: translate(-50%, -50%);
-    width: 100%;
-    text-align: center;
-    color: #fff;
-    z-index: 1000; 
-    opacity: 0; 
-    transition: opacity 0.8s ease;
-    pointer-events: none;
+    width: 100%; text-align: center;
+    color: #fff; z-index: 1000; 
+    opacity: 0; transition: opacity 0.8s ease;
 }
 
 /* ENVELOPPE */
 .envelope {
     position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 85vw;
-    max-width: 350px;
+    top: 50%; left: 50%;
+    width: 85vw; max-width: 350px;
     aspect-ratio: 350 / 230;
     transform: translate(-50%, -50%) scale(2.6); 
     transform-style: preserve-3d;
@@ -53,8 +46,12 @@ body {
     transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.envelope.is-active { top: 92%; transform: translate(-50%, -50%) scale(1.4); }
+.envelope.is-active { 
+    top: 92%; 
+    transform: translate(-50%, -50%) scale(1.4); 
+}
 
+/* DOS DE L'ENVELOPPE */
 .env-back {
     position: absolute;
     inset: 0;
@@ -65,17 +62,13 @@ body {
 /* CARTE */
 .card {
     position: absolute;
-    top: 10px;
-    left: 50%;
-    width: 90%;
-    aspect-ratio: 1 / 1.1; 
-    background: white;
-    z-index: 5;
+    top: 10px; left: 50%;
+    width: 90%; aspect-ratio: 1 / 1.1; 
+    background: white; z-index: 5;
     border-radius: 12px;
     transform: translate(-50%, 200%) translateZ(1px);
     box-shadow: 0 10px 30px rgba(0,0,0,0.2);
     transition: transform 1.2s cubic-bezier(0.34, 1.1, 0.64, 1);
-    overflow: hidden;
 }
 
 .card.is-visible { transform: translate(-50%, -30px) translateZ(1px); }
@@ -86,29 +79,51 @@ body {
 .intro-text { font-size: 1.1rem; line-height: 1.4; color: #333; }
 .scroll-invite { margin-top: auto; color: #bbb; font-size: 0.75rem; text-transform: uppercase; }
 
+/* DEVANT DE L'ENVELOPPE */
 .env-front {
     position: absolute;
-    inset: 0;
-    z-index: 10;
+    inset: 0; z-index: 10;
     background: url('front.png') center/cover no-repeat;
     transform: translateZ(2px);
 }
 
-/* RABAT V1 (FLAP UNIQUE) */
+/* LE RABAT (FLAP) */
 .env-flap {
     position: absolute;
     inset: 0;
-    background: url('flap.png') center top / 100% auto no-repeat;
     transform-origin: top;
     z-index: 20;
-    /* On utilise translateZ(2.1px) pour être juste au-dessus du front */
-    transform: rotateX(0deg) translateZ(2.1px); 
+    transform-style: preserve-3d;
+    /* On le plaque contre le dos (0.1px) pour éviter le gap */
+    transform: rotateX(0deg) translateZ(0.1px); 
     transition: transform 1s ease-in-out, z-index 0s 0.8s;
 }
 
 .envelope.is-opened .env-flap {
     transform: rotateX(180deg) translateZ(0.1px);
     z-index: 2;
+}
+
+.flap-outer, .flap-inner {
+    position: absolute;
+    /* On remonte de 1px pour boucher le joint visuel */
+    top: -1px; 
+    left: 0;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+}
+
+.flap-outer {
+    background: url('flap.png') center top / 100% auto no-repeat;
+    z-index: 2;
+}
+
+.flap-inner {
+    background: url('lining.png') center top / 100% auto no-repeat;
+    /* rotateX(180deg) pour l'avoir à l'endroit une fois ouvert */
+    transform: rotateX(180deg) scale(1.02);
+    z-index: 1;
 }
 
 @keyframes entranceSlide {
