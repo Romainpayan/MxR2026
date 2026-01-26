@@ -1,5 +1,5 @@
 :root {
-    --bg-color: #843a7a; /* Nouvelle couleur prune */
+    --bg-color: #843a7a;
 }
 
 body {
@@ -80,35 +80,47 @@ body {
     position: absolute;
     inset: 0; z-index: 10;
     background: url('front.png') center/cover no-repeat;
-    transform: translateZ(2px);
+    transform: translateZ(2px); /* Devant la carte et le fond */
 }
 
+/* RABAT CORRIGÉ */
 .env-flap {
     position: absolute;
     inset: 0;
     transform-origin: top;
     z-index: 20;
     transform-style: preserve-3d;
-    transform: rotateX(0deg) translateZ(0.1px); 
+    /* On commence à 2.1px pour être au-dessus du front (2px) */
+    transform: rotateX(0deg) translateZ(2.1px); 
     transition: transform 1s ease-in-out, z-index 0s 0.8s;
 }
 
 .envelope.is-opened .env-flap {
+    /* On finit à 0.1px pour être collé au back (0px) */
     transform: rotateX(180deg) translateZ(0.1px);
     z-index: 2;
 }
 
 .flap-outer, .flap-inner {
     position: absolute;
-    top: -1px; 
+    top: -1px; /* Décale pour boucher le gap à la pliure */
     left: 0;
     width: 100%;
     height: 100%;
     backface-visibility: hidden;
 }
 
-.flap-outer { background: url('flap.png') center top / 100% auto no-repeat; z-index: 2; }
-.flap-inner { background: url('lining.png') center top / 100% auto no-repeat; transform: rotateX(180deg) scale(1.02); z-index: 1; }
+.flap-outer { 
+    background: url('flap.png') center top / 100% auto no-repeat; 
+    z-index: 2; 
+}
+
+.flap-inner { 
+    background: url('lining.png') center top / 100% auto no-repeat; 
+    /* rotateX(180deg) car l'image est retournée, et scale pour boucher les bords */
+    transform: rotateX(180deg) scale(1.01); 
+    z-index: 1; 
+}
 
 @keyframes entranceSlide {
     0% { transform: translate(-100vw, 100vh) scale(2.6) rotate(-35deg); opacity: 0; }
