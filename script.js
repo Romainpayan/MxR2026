@@ -3,12 +3,15 @@ const introBottom = document.getElementById("introBottom");
 const env = document.getElementById("envelope");
 const card = document.getElementById("card");
 const waxSeal = document.getElementById("waxSeal");
+const floatingContainer = document.getElementById("floatingParticles");
+const flashOverlay = document.getElementById("flashOverlay");
 
 let isIntroFinished = false;
 let isAnimationComplete = false;
 let hasCentered = false;
 
 window.addEventListener('load', () => {
+    createFloatingAura();
     setTimeout(() => {
         introTop.style.opacity = "1";
         introBottom.style.opacity = "1";
@@ -17,14 +20,56 @@ window.addEventListener('load', () => {
     }, 3100);
 });
 
+// AURA : Nuée de particules resserrée avant le clic
+function createFloatingAura() {
+    const count = 60;
+    for (let i = 0; i < count; i++) {
+        const p = document.createElement('div');
+        p.className = 'floating-particle';
+        p.style.width = '1px'; p.style.height = '1px';
+        const radius = Math.random() * 12 + 38;
+        const duration = Math.random() * 10 + 15;
+        const startAngle = Math.random() * 360;
+        const maxOp = Math.random() * 0.5 + 0.2;
+        p.style.setProperty('--radius', radius + 'px');
+        p.style.setProperty('--duration', duration + 's');
+        p.style.setProperty('--start-angle', startAngle + 'deg');
+        p.style.setProperty('--max-op', maxOp);
+        floatingContainer.appendChild(p);
+    }
+}
+
+// EXPLOSION : Spirale de particules ultra-fines synchro flash
+function createSpiralBurst() {
+    const count = 60;
+    const spawnRadius = 35; 
+    for (let i = 0; i < count; i++) {
+        const p = document.createElement('div');
+        p.className = 'particle';
+        p.style.width = '1px'; p.style.height = '1px';
+        const startAngle = Math.random() * 360;
+        const dist = Math.random() * 120 + 100;
+        const rot = (Math.random() * 360 + 180) * (Math.random() > 0.5 ? 1 : -1);
+        p.style.setProperty('--start-angle', startAngle + 'deg');
+        p.style.setProperty('--spawn-radius', spawnRadius + 'px');
+        p.style.setProperty('--dist', dist + 'px');
+        p.style.setProperty('--rot', rot + 'deg');
+        waxSeal.appendChild(p);
+        
+        setTimeout(() => p.remove(), 700);
+    }
+}
+
 env.addEventListener("click", () => {
     if (!isIntroFinished || isAnimationComplete) return;
     
+    // Déclenchement du flash éblouissant
+    flashOverlay.classList.add("is-flashing");
+
     introTop.style.opacity = "0";
     introBottom.style.opacity = "0";
-    
-    // Déclenche la rupture et le scintillement
     waxSeal.classList.add("is-broken");
+    createSpiralBurst();
     
     setTimeout(() => {
         env.classList.add("is-active", "is-opened");
@@ -38,7 +83,6 @@ window.addEventListener("scroll", () => {
         if(window.scrollY > 0) window.scrollTo(0,0);
         return;
     }
-    
     if (window.scrollY > 15 && !hasCentered) {
         hasCentered = true;
         card.classList.add("is-centered");
