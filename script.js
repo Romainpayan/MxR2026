@@ -4,13 +4,10 @@ const card = document.getElementById("card");
 
 let isIntroFinished = false;
 let isAnimationComplete = false;
-let hasCentered = false;
 
 window.addEventListener('load', () => {
-    setTimeout(() => {
-        header.style.opacity = "1";
-        isIntroFinished = true;
-    }, 3100);
+    // Temps d'atterrissage de l'enveloppe
+    setTimeout(() => { header.style.opacity = "1"; isIntroFinished = true; }, 3100);
 });
 
 env.addEventListener("click", () => {
@@ -27,11 +24,19 @@ window.addEventListener("scroll", () => {
         return;
     }
     
-    if (window.scrollY > 15 && !hasCentered) {
-        hasCentered = true;
+    const scrollY = window.scrollY;
+    
+    // Seuil de centrage (0 à 400px de scroll)
+    if (scrollY > 20 && scrollY < 400) {
         card.classList.add("is-centered");
-    } else if (window.scrollY < 10 && hasCentered) {
-        hasCentered = false;
-        card.classList.remove("is-centered");
+        card.classList.remove("is-full");
+    } 
+    // Seuil d'expansion (au-delà de 400px)
+    else if (scrollY >= 400) {
+        card.classList.add("is-full");
+    } 
+    // Retour à l'état initial
+    else {
+        card.classList.remove("is-centered", "is-full");
     }
 });
