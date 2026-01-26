@@ -1,70 +1,132 @@
-:root { --green-dark: #2d4a27; }
+:root {
+    --green-dark: #2d4a27;
+}
 
 body {
-    margin: 0; height: 500vh; background: #1a1a1a;
-    font-family: 'Helvetica Neue', Arial, sans-serif; overflow-x: hidden;
+    margin: 0;
+    height: 200vh; 
+    background: #1a1a1a;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    overflow-x: hidden;
 }
 
-.viewport { position: fixed; inset: 0; background: var(--green-dark); overflow: hidden; }
+.viewport {
+    position: fixed;
+    inset: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 480px;
+    height: 100vh;
+    background: var(--green-dark);
+    overflow: hidden;
+}
 
 .header {
-    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-    width: 100%; text-align: center; color: #fff; transition: opacity 0.8s; pointer-events: none;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    text-align: center;
+    color: #fff;
+    z-index: 1000; 
+    opacity: 0; 
+    transition: opacity 0.8s ease;
+    pointer-events: none;
 }
 
-/* ENVELOPPE */
 .envelope {
-    position: absolute; top: 50%; left: 50%; width: 85vw; max-width: 350px; aspect-ratio: 350 / 230;
-    transform: translate(-50%, -50%) scale(2.6); transform-style: preserve-3d; perspective: 2000px;
-    cursor: pointer; z-index: 10; animation: entranceSlide 2.4s cubic-bezier(0.19, 1, 0.22, 1) 0.5s backwards;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 85vw;
+    max-width: 350px;
+    aspect-ratio: 350 / 230;
+    transform: translate(-50%, -50%) scale(2.6); 
+    transform-style: preserve-3d;
+    perspective: 2000px;
+    cursor: pointer;
+    z-index: 10;
+    animation: entranceSlide 2.4s cubic-bezier(0.19, 1, 0.22, 1) 0.5s backwards;
     transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
 }
+
 .envelope.is-active { top: 92%; transform: translate(-50%, -50%) scale(1.4); }
 
-/* RABAT DOUBLE FACE */
-.env-flap-container {
-    position: absolute; inset: 0; transform-origin: top; transform-style: preserve-3d;
-    transform: rotateX(0deg) translateZ(5px); transition: transform 1s ease-in-out, z-index 0s 0.8s;
+.env-back {
+    position: absolute;
+    inset: 0;
+    background: url('back.png') center/cover no-repeat;
+    transform: translateZ(0px);
 }
-.envelope.is-opened .env-flap-container { transform: rotateX(180deg) translateZ(1px); z-index: 2; }
-.flap-outer, .flap-inner { position: absolute; inset: 0; backface-visibility: hidden; }
 
-/* Chemins relatifs */
-.flap-outer { background: url('flap.png') center top/100% no-repeat; }
-.flap-inner { background: url('lining.png') center top/100% no-repeat; transform: rotateX(180deg); }
-
-/* CARTE */
 .card {
-    position: absolute; top: 10px; left: 50%; width: 90%; aspect-ratio: 1 / 1.1;
-    background: white; z-index: 5; border-radius: 12px; transform: translate(-50%, 200%) translateZ(2px);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.2); transition: all 1s cubic-bezier(0.34, 1.1, 0.64, 1);
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    width: 90%;
+    aspect-ratio: 1 / 1.1; 
+    background: white;
+    z-index: 5;
+    border-radius: 12px;
+    transform: translate(-50%, 200%) translateZ(2px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    transition: transform 1.2s cubic-bezier(0.34, 1.1, 0.64, 1);
+    overflow: hidden;
 }
+
 .card.is-visible { transform: translate(-50%, -30px) translateZ(2px); }
-.card.is-centered { transform: translate(-50%, -42vh) translateZ(2px); }
-.card.is-full {
-    width: 100%; height: 100vh; border-radius: 0; aspect-ratio: auto;
-    transform: translate(-50%, -100vh) translateZ(10px); overflow-y: auto;
+
+/* POSITION D'ÉTAPE CENTRÉE */
+.card.is-centered {
+    transform: translate(-50%, -40vh) translateZ(2px);
 }
 
-.card-inner { padding: 40px 25px; text-align: center; }
-.card-step-2 { display: none; opacity: 0; transition: opacity 0.8s; }
-.is-full .card-step-2 { display: block; opacity: 1; }
-.is-full .card-step-1 { display: none; }
+.card-inner { padding: 35px 25px; height: 100%; display: flex; flex-direction: column; text-align: center; box-sizing: border-box; }
+.names { font-size: 1.8rem; font-weight: bold; border-bottom: 1px solid #eee; padding-bottom: 15px; margin: 5px 0 20px; }
+.intro-text { font-size: 1.1rem; line-height: 1.4; color: #333; }
+.scroll-invite { margin-top: auto; color: #bbb; font-size: 0.75rem; text-transform: uppercase; }
 
-/* CONTENU SITE */
-.header-image { width: 100%; height: 180px; background: #eee url('lining.png') center/cover; margin-bottom: 20px; border-radius: 8px; }
-.names { font-size: 1.8rem; border-bottom: 1px solid #eee; padding-bottom: 15px; margin-bottom: 20px; font-weight: bold; }
-.section { padding: 30px 0; border-bottom: 1px solid #eee; }
-.timeline { text-align: left; max-width: 250px; margin: 0 auto; }
-.event { display: flex; gap: 15px; margin-bottom: 10px; }
-.event span { font-weight: bold; min-width: 50px; }
-.btn-main { background: var(--green-dark); color: white; border: none; padding: 15px 30px; border-radius: 50px; font-weight: bold; margin-top: 15px; }
+.env-front {
+    position: absolute;
+    inset: 0;
+    z-index: 10;
+    background: url('front.png') center/cover no-repeat;
+    transform: translateZ(4px);
+}
 
-/* Images fixes */
-.env-front { position: absolute; inset: 0; z-index: 10; background: url('front.png') center/cover; transform: translateZ(4px); }
-.env-back { position: absolute; inset: 0; background: url('back.png') center/cover; transform: translateZ(0px); }
+.env-flap-container {
+    position: absolute;
+    inset: 0;
+    transform-origin: top;
+    z-index: 20;
+    transform-style: preserve-3d;
+    transform: rotateX(0deg) translateZ(5px); 
+    transition: transform 1s ease-in-out, z-index 0s 0.8s;
+}
 
-@keyframes entranceSlide { 
-    0% { transform: translate(-100vw, 100vh) scale(2.6) rotate(-35deg); opacity: 0; } 
-    100% { transform: translate(-50%, -50%) scale(2.6) rotate(0deg); opacity: 1; } 
+.envelope.is-opened .env-flap-container {
+    transform: rotateX(180deg) translateZ(1px);
+    z-index: 2;
+}
+
+.flap-outer, .flap-inner {
+    position: absolute;
+    inset: 0;
+    backface-visibility: hidden;
+}
+
+.flap-outer {
+    background: url('flap.png') center top / 100% auto no-repeat;
+}
+
+.flap-inner {
+    background: url('lining.png') center top / 100% auto no-repeat;
+    transform: rotateX(180deg);
+}
+
+@keyframes entranceSlide {
+    0% { transform: translate(-100vw, 100vh) scale(2.6) rotate(-35deg); opacity: 0; }
+    100% { transform: translate(-50%, -50%) scale(2.6) rotate(0deg); opacity: 1; }
 }
