@@ -55,7 +55,7 @@ body {
 .env-back {
     position: absolute;
     inset: 0;
-    background: url('https://raw.githubusercontent.com/Romainpayan/MxR2026/refs/heads/main/back.png') center/cover no-repeat;
+    background: url('back.png') center/cover no-repeat;
     transform: translateZ(0px);
 }
 
@@ -83,7 +83,7 @@ body {
 .env-front {
     position: absolute;
     inset: 0; z-index: 10;
-    background: url('https://raw.githubusercontent.com/Romainpayan/MxR2026/refs/heads/main/front.png') center/cover no-repeat;
+    background: url('front.png') center/cover no-repeat;
     transform: translateZ(2px);
 }
 
@@ -113,12 +113,12 @@ body {
 }
 
 .flap-outer { 
-    background: url('https://raw.githubusercontent.com/Romainpayan/MxR2026/refs/heads/main/flap.png') center top / 100% auto no-repeat; 
+    background: url('flap.png') center top / 100% auto no-repeat; 
     z-index: 2; 
 }
 
 .flap-inner { 
-    background: url('https://raw.githubusercontent.com/Romainpayan/MxR2026/refs/heads/main/lining.png') center bottom / 100% auto no-repeat; 
+    background: url('lining.png') center bottom / 100% auto no-repeat; 
     transform: rotateX(180deg) scale(1.02); 
     z-index: 1; 
 }
