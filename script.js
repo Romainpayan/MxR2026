@@ -6,7 +6,6 @@ let isIntroFinished = false;
 let isAnimationComplete = false;
 
 window.addEventListener('load', () => {
-    // On attend la fin de l'animation CSS (2.4s + 0.5s) avant de montrer le texte
     setTimeout(() => {
         header.style.opacity = "1";
         isIntroFinished = true;
@@ -41,7 +40,6 @@ window.addEventListener("scroll", () => {
     const maxScroll = document.body.scrollHeight - vh;
     const progress = scrollY / maxScroll;
     
-    // Déplacement fluide au scroll
     const moveY = -15 - (progress * 1500); 
     card.style.transform = `translateY(${moveY}px) translateZ(2px)`;
 });
