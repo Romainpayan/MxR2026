@@ -9,15 +9,40 @@ const flashOverlay = document.getElementById("flashOverlay");
 let isIntroFinished = false;
 let isAnimationComplete = false;
 
+// Textes à écrire
+const textTopContent = "Vous avez reçu\nune Invitation";
+const textBottomContent = "Ouvrez le Sceau";
+
 window.addEventListener('load', () => {
     createFloatingAura();
-    setTimeout(() => {
-        introTop.style.opacity = "1";
-        introBottom.style.opacity = "1";
+    setTimeout(async () => {
+        // Écriture de la première phrase
+        await typeEffect(introTop, textTopContent, 30);
+        
+        // PAUSE DRAMATIQUE (1.2 seconde)
+        await new Promise(resolve => setTimeout(resolve, 1200));
+        
+        // Écriture de la deuxième phrase
+        await typeEffect(introBottom, textBottomContent, 35);
+        
         waxSeal.classList.add("is-glowing");
         isIntroFinished = true;
     }, 3100);
 });
+
+async function typeEffect(element, text, speed) {
+    element.innerHTML = "";
+    element.style.opacity = "1";
+    
+    for (let char of text) {
+        if (char === "\n") {
+            element.innerHTML += "<br>";
+        } else {
+            element.innerHTML += char;
+        }
+        await new Promise(resolve => setTimeout(resolve, speed + Math.random() * 20));
+    }
+}
 
 function createFloatingAura() {
     const count = 60;
@@ -38,7 +63,7 @@ function createFloatingAura() {
 }
 
 function createSpiralBurst() {
-    const count = 60;
+    const count = 0; // Tes modifs : pas d'explosion de particules
     const spawnRadius = 35; 
     for (let i = 0; i < count; i++) {
         const p = document.createElement('div');
@@ -59,19 +84,16 @@ function createSpiralBurst() {
 env.addEventListener("click", () => {
     if (!isIntroFinished || isAnimationComplete) return;
     
-    // 1. CLIC : Le sceau se fissure (0ms)
     waxSeal.classList.add("is-broken");
     introTop.style.opacity = "0";
     introBottom.style.opacity = "0";
 
-    // 2. IMPACT : Flash + Explosion + Séparation (400ms)
     setTimeout(() => {
         flashOverlay.classList.add("is-flashing");
         waxSeal.classList.add("is-separating");
         createSpiralBurst();
     }, 400);
     
-    // 3. OUVERTURE : L'enveloppe se déploie (1000ms)
     setTimeout(() => {
         env.classList.add("is-active", "is-opened");
         setTimeout(() => { card.classList.add("is-visible"); }, 800);
