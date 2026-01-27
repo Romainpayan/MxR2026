@@ -1,106 +1,252 @@
-const introTop = document.getElementById("introTop");
-const introBottom = document.getElementById("introBottom");
-const env = document.getElementById("envelope");
-const card = document.getElementById("card");
-const waxSeal = document.getElementById("waxSeal");
-const floatingContainer = document.getElementById("floatingParticles");
-const flashOverlay = document.getElementById("flashOverlay");
-
-let isIntroFinished = false;
-let isAnimationComplete = false;
-
-// Textes à écrire
-const textTopContent = "Vous avez reçu\nune Invitation";
-const textBottomContent = "Ouvrez le Sceau";
-
-window.addEventListener('load', () => {
-    createFloatingAura();
-    setTimeout(async () => {
-        // Écriture de la première phrase
-        await typeEffect(introTop, textTopContent, 30);
-        
-        // PAUSE DRAMATIQUE (1.2 seconde)
-        await new Promise(resolve => setTimeout(resolve, 1200));
-        
-        // Écriture de la deuxième phrase
-        await typeEffect(introBottom, textBottomContent, 35);
-        
-        waxSeal.classList.add("is-glowing");
-        isIntroFinished = true;
-    }, 3100);
-});
-
-async function typeEffect(element, text, speed) {
-    element.innerHTML = "";
-    element.style.opacity = "1";
-    
-    for (let char of text) {
-        if (char === "\n") {
-            element.innerHTML += "<br>";
-        } else {
-            element.innerHTML += char;
-        }
-        await new Promise(resolve => setTimeout(resolve, speed + Math.random() * 20));
-    }
+:root {
+    --bg-color: #331007;
+    --text-color-invitation: #2f1212;
 }
 
-function createFloatingAura() {
-    const count = 60;
-    for (let i = 0; i < count; i++) {
-        const p = document.createElement('div');
-        p.className = 'floating-particle';
-        p.style.width = '1px'; p.style.height = '1px';
-        const radius = Math.random() * 12 + 38;
-        const duration = Math.random() * 10 + 15;
-        const startAngle = Math.random() * 360;
-        const maxOp = Math.random() * 0.5 + 0.2;
-        p.style.setProperty('--radius', radius + 'px');
-        p.style.setProperty('--duration', duration + 's');
-        p.style.setProperty('--start-angle', startAngle + 'deg');
-        p.style.setProperty('--max-op', maxOp);
-        floatingContainer.appendChild(p);
-    }
+body {
+    margin: 0;
+    height: 200vh; 
+    background: #1a1a1a;
+    font-family: 'Montserrat', sans-serif;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
-function createSpiralBurst() {
-    const count = 0; // Tes modifs : pas d'explosion de particules
-    const spawnRadius = 35; 
-    for (let i = 0; i < count; i++) {
-        const p = document.createElement('div');
-        p.className = 'particle';
-        p.style.width = '1px'; p.style.height = '1px';
-        const startAngle = Math.random() * 360;
-        const dist = Math.random() * 120 + 100;
-        const rot = (Math.random() * 360 + 180) * (Math.random() > 0.5 ? 1 : -1);
-        p.style.setProperty('--start-angle', startAngle + 'deg');
-        p.style.setProperty('--spawn-radius', spawnRadius + 'px');
-        p.style.setProperty('--dist', dist + 'px');
-        p.style.setProperty('--rot', rot + 'deg');
-        waxSeal.appendChild(p);
-        setTimeout(() => p.remove(), 800);
-    }
+.viewport {
+    position: fixed;
+    inset: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 480px;
+    height: 100vh;
+    background: var(--bg-color);
+    overflow: hidden;
+    perspective: 2000px;
 }
 
-env.addEventListener("click", () => {
-    if (!isIntroFinished || isAnimationComplete) return;
-    
-    waxSeal.classList.add("is-broken");
-    introTop.style.opacity = "0";
-    introBottom.style.opacity = "0";
+/* FLASH ADOUCI */
+.white-flash-overlay {
+    position: fixed;
+    inset: 0;
+    background: white;
+    z-index: 9999;
+    opacity: 0;
+    pointer-events: none;
+}
+@keyframes flashEffect {
+    0% { opacity: 0; }
+    5% { opacity: 0.4; } /* Intensité réduite de 1.0 à 0.4 */
+    100% { opacity: 0; }
+}
+.white-flash-overlay.is-flashing {
+    animation: flashEffect 0.6s ease-out forwards;
+}
 
-    setTimeout(() => {
-        flashOverlay.classList.add("is-flashing");
-        waxSeal.classList.add("is-separating");
-        createSpiralBurst();
-    }, 400);
-    
-    setTimeout(() => {
-        env.classList.add("is-active", "is-opened");
-        setTimeout(() => { card.classList.add("is-visible"); }, 800);
-        setTimeout(() => { isAnimationComplete = true; }, 1900);
-    }, 1000); 
-});
+/* TEXTES D'INTRODUCTION */
+.intro-text-top, .intro-text-bottom {
+    position: absolute;
+    left: 31%;
+    transform: translateZ(5px);
+    text-align: left;
+    color: var(--text-color-invitation);
+    z-index: 100;
+    opacity: 0;
+    pointer-events: none;
+    width: 60%;
+    margin: 0;
+    font-family: 'Meddon', cursive;
+    font-weight: 400; 
+    font-style: normal;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+}
 
-window.addEventListener("scroll", () => {
-    if (!isAnimationComplete && window.scrollY > 0) window.scrollTo(0,0);
-});
+.intro-text-top { 
+    top: 15%; 
+    font-size: 0.9rem; 
+    line-height: 1.2; 
+}
+
+.intro-text-bottom { 
+    bottom: 16%; 
+    font-size: 0.8rem; 
+}
+
+/* L'ENVELOPPE */
+.envelope {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 85vw;
+    max-width: 350px;
+    aspect-ratio: 350 / 230;
+    transform: translate(-50%, -50%) scale(2.20); 
+    transform-style: preserve-3d;
+    cursor: pointer;
+    z-index: 10;
+    animation: entranceSlide 2.4s cubic-bezier(0.19, 1, 0.22, 1) 0.5s backwards;
+    transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.envelope.is-active { 
+    top: 92%; 
+    transform: translate(-50%, -50%) scale(1.4); 
+}
+
+.env-back {
+    position: absolute; inset: 0;
+    background: url('https://raw.githubusercontent.com/Romainpayan/MxR2026/refs/heads/main/back.png') center/cover no-repeat;
+    transform: translateZ(0px);
+    z-index: 1;
+}
+
+.env-front {
+    position: absolute; inset: 0;
+    background: url('https://raw.githubusercontent.com/Romainpayan/MxR2026/refs/heads/main/front.png') center/cover no-repeat;
+    transform: translateZ(2px);
+    z-index: 10;
+}
+
+/* LA CARTE */
+.card {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    width: 90%; 
+    height: auto;
+    min-height: 380px;
+    background: white;
+    z-index: 5;
+    border-radius: 12px;
+    transform: translate(-50%, 200%) translateZ(1px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    transition: transform 1.2s cubic-bezier(0.34, 1.1, 0.64, 1);
+    overflow-y: auto;
+}
+.card.is-visible { transform: translate(-50%, -30px) translateZ(1px); }
+
+.card-inner { padding: 35px 25px; text-align: center; }
+.names { font-size: 1.6rem; font-weight: 700; border-bottom: 1px solid #eee; padding-bottom: 15px; margin-bottom: 20px; }
+
+/* LE RABAT */
+.env-flap {
+    position: absolute; inset: 0;
+    transform-origin: top;
+    z-index: 20;
+    transform-style: preserve-3d;
+    transform: rotateX(0deg) translateZ(2.1px); 
+    transition: transform 1s ease-in-out, z-index 0s 0.8s;
+}
+
+.envelope.is-opened .env-flap {
+    transform: rotateX(180deg) translateZ(0.1px);
+    z-index: 2;
+}
+
+.flap-outer { 
+    position: absolute; inset: 0;
+    background: url('https://raw.githubusercontent.com/Romainpayan/MxR2026/refs/heads/main/flap.png') center top / 100% auto no-repeat; 
+    z-index: 2; 
+    backface-visibility: hidden;
+}
+
+.flap-inner { 
+    position: absolute; inset: 0;
+    background: url('https://raw.githubusercontent.com/Romainpayan/MxR2026/refs/heads/main/lining.png') center bottom / 100% auto no-repeat; 
+    transform: rotateX(180deg) scale(1.02); 
+    z-index: 1; 
+    backface-visibility: hidden;
+}
+
+/* SCEAU ET PARTICULES */
+.wax-seal-container {
+    position: absolute;
+    left: 50%;
+    top: 20%; 
+    transform: translate(-50%, -50%) translateZ(5px); 
+    width: 350px;
+    height: 80px;
+    z-index: 30;
+    pointer-events: none;
+}
+
+.seal-glow {
+    position: absolute;
+    top: 145%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 350px;
+    height: 230px;
+    opacity: 0;
+    z-index: 20;
+}
+
+@keyframes organicGlow { 0%, 100% { opacity: 0.4; } 50% { opacity: 0.9; } }
+.is-glowing .seal-glow { animation: organicGlow 3s ease-in-out infinite; }
+
+.floating-particle {
+    position: absolute;
+    top: 145%; left: 50%;
+    background: white;
+    border-radius: 50%;
+    box-shadow: 0 0 3px 1px rgba(255, 255, 255, 0.6);
+    z-index: 2;
+    opacity: 0;
+    transition: opacity 1.5s ease;
+    animation: orbit var(--duration) linear infinite;
+}
+.is-glowing .floating-particle { opacity: var(--max-op); }
+
+@keyframes orbit {
+    from { transform: rotate(var(--start-angle)) translateX(var(--radius)) rotate(calc(-1 * var(--start-angle))); }
+    to { transform: rotate(calc(var(--start-angle) + 360deg)) translateX(var(--radius)) rotate(calc(-1 * (var(--start-angle) + 360deg))); }
+}
+
+.particle {
+    position: absolute;
+    top: 145%; left: 50%;
+    background: white;
+    border-radius: 50%;
+    box-shadow: 0 0 5px 2px rgba(255, 255, 255, 0.8);
+    z-index: 15;
+    animation: particleSpiral 0.7s cubic-bezier(0.1, 0.5, 0.2, 1) forwards;
+}
+
+@keyframes particleSpiral {
+    0% { opacity: 0; transform: rotate(var(--start-angle)) translateX(var(--spawn-radius)) scale(0.1); }
+    15% { opacity: 0.6; }
+    100% { opacity: 0; transform: rotate(calc(var(--start-angle) + var(--rot))) translateX(var(--dist)) scale(4); }
+}
+
+.seal-full, .seal-part {
+    position: absolute; inset: 0;
+    width: 100%; height: auto;
+    z-index: 5;
+}
+.seal-part { visibility: hidden; }
+
+.is-broken .seal-full { visibility: hidden; }
+.is-broken .seal-part { visibility: visible; }
+
+.is-separating .seal-top { 
+    transform: translateY(-40px) rotate(-15deg); 
+    opacity: 0; 
+    transition: all 0.6s ease-out; 
+}
+.is-separating .seal-bottom { 
+    transform: translateY(50px) rotate(15deg); 
+    opacity: 0; 
+    transition: all 0.6s ease-out; 
+}
+
+.is-broken .seal-glow, .is-broken .floating-particle { 
+    opacity: 0 !important; 
+    transition: opacity 0.3s; 
+    animation: none; 
+}
+
+@keyframes entranceSlide {
+    0% { transform: translate(-100vw, 100vh) scale(0) rotate(-35deg); opacity: 0; }
+    100% { transform: translate(-50%, -50%) scale(2.20) rotate(0deg); opacity:
