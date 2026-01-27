@@ -8,7 +8,6 @@ const flashOverlay = document.getElementById("flashOverlay");
 
 let isIntroFinished = false;
 let isAnimationComplete = false;
-let hasCentered = false;
 
 window.addEventListener('load', () => {
     createFloatingAura();
@@ -20,7 +19,6 @@ window.addEventListener('load', () => {
     }, 3100);
 });
 
-// AURA : Nuée de particules resserrée avant le clic
 function createFloatingAura() {
     const count = 60;
     for (let i = 0; i < count; i++) {
@@ -39,7 +37,6 @@ function createFloatingAura() {
     }
 }
 
-// EXPLOSION : Spirale de particules ultra-fines synchro flash
 function createSpiralBurst() {
     const count = 60;
     const spawnRadius = 35; 
@@ -55,39 +52,33 @@ function createSpiralBurst() {
         p.style.setProperty('--dist', dist + 'px');
         p.style.setProperty('--rot', rot + 'deg');
         waxSeal.appendChild(p);
-        
-        setTimeout(() => p.remove(), 700);
+        setTimeout(() => p.remove(), 800);
     }
 }
 
 env.addEventListener("click", () => {
     if (!isIntroFinished || isAnimationComplete) return;
     
-    // Déclenchement du flash éblouissant
-    flashOverlay.classList.add("is-flashing");
-
+    // 1. CLIC : Le sceau se fissure (0ms)
+    waxSeal.classList.add("is-broken");
     introTop.style.opacity = "0";
     introBottom.style.opacity = "0";
-    waxSeal.classList.add("is-broken");
-    createSpiralBurst();
+
+    // 2. IMPACT : Flash + Explosion + Séparation (400ms)
+    setTimeout(() => {
+        flashOverlay.classList.add("is-flashing");
+        waxSeal.classList.add("is-separating");
+        createSpiralBurst();
+    }, 400);
     
+    // 3. OUVERTURE : L'enveloppe se déploie (1000ms)
     setTimeout(() => {
         env.classList.add("is-active", "is-opened");
         setTimeout(() => { card.classList.add("is-visible"); }, 800);
         setTimeout(() => { isAnimationComplete = true; }, 1900);
-    }, 600); 
+    }, 1000); 
 });
 
 window.addEventListener("scroll", () => {
-    if (!isAnimationComplete) {
-        if(window.scrollY > 0) window.scrollTo(0,0);
-        return;
-    }
-    if (window.scrollY > 15 && !hasCentered) {
-        hasCentered = true;
-        card.classList.add("is-centered");
-    } else if (window.scrollY < 10 && hasCentered) {
-        hasCentered = false;
-        card.classList.remove("is-centered");
-    }
+    if (!isAnimationComplete && window.scrollY > 0) window.scrollTo(0,0);
 });
