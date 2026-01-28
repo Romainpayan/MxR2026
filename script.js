@@ -9,48 +9,36 @@ const flashOverlay = document.getElementById("flashOverlay");
 let isIntroFinished = false;
 let isAnimationComplete = false;
 
-// Textes à écrire
-const textTopContent = "Vous avez reçu\nune Invitation";
-const textBottomContent = "Ouvrez le Sceau";
-
 window.addEventListener('load', () => {
     createFloatingAura();
-    setTimeout(async () => {
-        // Écriture de la première phrase
-        await typeEffect(introTop, textTopContent, 30);
+    
+    // Déclenchement séquentiel précis
+    setTimeout(() => {
+        // 1. Faire apparaître la première phrase plus vite (2.8s)
+        introTop.classList.add("is-visible");
         
-        // PAUSE DRAMATIQUE (1.2 seconde)
-        await new Promise(resolve => setTimeout(resolve, 1200));
+        setTimeout(() => {
+            // 2. Faire apparaître la seconde phrase AVANT le glow
+            introBottom.classList.add("is-visible");
+            
+            setTimeout(() => {
+                // 3. Enfin, activer le glow et les particules
+                waxSeal.classList.add("is-glowing");
+                isIntroFinished = true;
+            }, 1000); // Délai avant le glow
+            
+        }, 1000); // Délai entre phrase 1 et phrase 2
         
-        // Écriture de la deuxième phrase
-        await typeEffect(introBottom, textBottomContent, 35);
-        
-        waxSeal.classList.add("is-glowing");
-        isIntroFinished = true;
-    }, 3100);
+    }, 2800); 
 });
 
-async function typeEffect(element, text, speed) {
-    element.innerHTML = "";
-    element.style.opacity = "1";
-    
-    for (let char of text) {
-        if (char === "\n") {
-            element.innerHTML += "<br>";
-        } else {
-            element.innerHTML += char;
-        }
-        await new Promise(resolve => setTimeout(resolve, speed + Math.random() * 20));
-    }
-}
-
 function createFloatingAura() {
-    const count = 60;
+    const count = 200; 
     for (let i = 0; i < count; i++) {
         const p = document.createElement('div');
         p.className = 'floating-particle';
         p.style.width = '1px'; p.style.height = '1px';
-        const radius = Math.random() * 12 + 38;
+        const radius = Math.random() * 10 + 35;
         const duration = Math.random() * 10 + 15;
         const startAngle = Math.random() * 360;
         const maxOp = Math.random() * 0.5 + 0.2;
@@ -63,30 +51,15 @@ function createFloatingAura() {
 }
 
 function createSpiralBurst() {
-    const count = 0; // Tes modifs : pas d'explosion de particules
-    const spawnRadius = 35; 
-    for (let i = 0; i < count; i++) {
-        const p = document.createElement('div');
-        p.className = 'particle';
-        p.style.width = '1px'; p.style.height = '1px';
-        const startAngle = Math.random() * 360;
-        const dist = Math.random() * 120 + 100;
-        const rot = (Math.random() * 360 + 180) * (Math.random() > 0.5 ? 1 : -1);
-        p.style.setProperty('--start-angle', startAngle + 'deg');
-        p.style.setProperty('--spawn-radius', spawnRadius + 'px');
-        p.style.setProperty('--dist', dist + 'px');
-        p.style.setProperty('--rot', rot + 'deg');
-        waxSeal.appendChild(p);
-        setTimeout(() => p.remove(), 800);
-    }
+    const count = 0; 
 }
 
 env.addEventListener("click", () => {
     if (!isIntroFinished || isAnimationComplete) return;
     
     waxSeal.classList.add("is-broken");
-    introTop.style.opacity = "0";
-    introBottom.style.opacity = "0";
+    introTop.classList.remove("is-visible");
+    introBottom.classList.remove("is-visible");
 
     setTimeout(() => {
         flashOverlay.classList.add("is-flashing");
