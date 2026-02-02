@@ -1,6 +1,7 @@
 const env = document.getElementById("envelope");
 const waxSeal = document.getElementById("waxSeal");
 const card = document.getElementById("card");
+const cardInner = document.getElementById("cardInner");
 const welcomeScreen = document.getElementById("welcomeScreen");
 const flashOverlay = document.getElementById("flashOverlay");
 
@@ -30,8 +31,7 @@ function createFloatingAura() {
         const startAngle = Math.random() * 360;
         const maxOp = Math.random() * 0.6 + 0.2; 
         const size = Math.random() < 0.5 ? 1 : 2; 
-        p.style.width = size + 'px';
-        p.style.height = size + 'px';
+        p.style.width = size + 'px'; p.style.height = size + 'px';
         p.style.setProperty('--radius', radius + 'px');
         p.style.setProperty('--duration', duration + 's');
         p.style.setProperty('--start-angle', startAngle + 'deg');
@@ -57,15 +57,19 @@ env.addEventListener("click", () => {
     }, 1000); 
 });
 
-const handleScrollToDeploy = (e) => {
+// Déploiement au scroll ou swipe
+const handleInteraction = () => {
     if (cardState === 'peek') {
         card.classList.add("is-deployed");
         cardState = 'deployed';
+        // Le contenu est déjà aligné en haut via CSS (flex-start)
+        // On remet le scroll à zéro au cas où
+        cardInner.scrollTop = 0;
     }
 };
 
-window.addEventListener("wheel", handleScrollToDeploy);
-window.addEventListener("touchmove", handleScrollToDeploy);
+window.addEventListener("wheel", handleInteraction);
+window.addEventListener("touchmove", handleInteraction);
 
 window.addEventListener("scroll", () => {
     if (window.scrollY > 0) window.scrollTo(0,0);
