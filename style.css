@@ -1,138 +1,86 @@
 :root {
     --bg-color: #331007;
     --gold-splash: #f9cb8d;
-    --emboss-color: #90aa71;
     --emboss1-color: #ffe3bd;
     --text-color-invitation: #2f1212;
 }
 
-body {
-    margin: 0; padding: 0; height: 100vh;
-    background: #1a1a1a; font-family: 'Montserrat', sans-serif;
-    overflow: hidden;
-}
+body { margin: 0; padding: 0; height: 100vh; background: #1a1a1a; font-family: 'Montserrat', sans-serif; overflow: hidden; }
 
 .main-wrapper {
-    position: relative; margin: 0 auto;
-    width: 100%; max-width: 480px; height: 100vh;
+    position: relative; margin: 0 auto; width: 100%; max-width: 480px; height: 100vh;
     background: var(--bg-color) url('https://raw.githubusercontent.com/Romainpayan/MxR2026/refs/heads/main/background.png') center center / cover no-repeat;
     overflow: hidden;
 }
 
 /* SPLASH SCREEN */
-.welcome-screen {
-    position: absolute; inset: 0; z-index: 10000;
-    display: flex; justify-content: center; align-items: center;
-    background: transparent; cursor: pointer;
-    transition: opacity 0.8s ease, visibility 0.8s;
-}
-
-.welcome-content {
-    position: relative;
-    display: flex; flex-direction: column; align-items: center;
-    justify-content: center;
-    height: 100%; width: 100%;
-    transform: translateY(-35px);
-}
-
+.welcome-screen { position: absolute; inset: 0; z-index: 10000; display: flex; justify-content: center; align-items: center; cursor: pointer; transition: opacity 0.8s ease, visibility 0.8s; }
+.welcome-content { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; width: 100%; transform: translateY(-65px); }
 .splash-logo-row { display: flex; align-items: center; justify-content: center; gap: 30px; }
 .splash-logo { width: 150px; height: auto; }
-
-.splash-text {
-    position: absolute; left: 50%; transform: translateX(-50%);
-    font-family: 'Cinzel', serif; font-size: 1.4rem; font-weight: 500;
-    color: var(--gold-splash); margin: 0; letter-spacing: 3px; line-height: 1.1; text-align: center; width: 100%;
-    opacity: 0;
-    text-shadow: 0px 1px 0px var(--emboss1-color), 2px 2px 4px rgba(0,0,0,0.3);
-}
-
+.splash-text { position: absolute; left: 50%; transform: translateX(-50%); font-family: 'Cinzel', serif; font-size: 1.4rem; font-weight: 500; color: var(--gold-splash); text-align: center; width: 100%; opacity: 0; text-shadow: 0px 1px 0px var(--emboss1-color), 2px 2px 4px rgba(0,0,0,0.3); }
 .text-top { bottom: calc(50% + 90px); animation: fadeInText 1s ease forwards 0.5s; }
 .text-bottom { top: calc(50% + 90px); animation: fadeInText 1s ease forwards 1.8s; }
+.splash-date { font-family: 'Cinzel', serif; font-size: 0.9rem; color: var(--gold-splash); }
 
-.splash-date { font-family: 'Cinzel', serif; font-size: 0.9rem; color: var(--gold-splash); text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5); }
-
-@keyframes fadeInText {
-    from { opacity: 0; transform: translate(-50%, 10px); }
-    to { opacity: 1; transform: translate(-50%, 0); }
-}
-
+@keyframes fadeInText { from { opacity: 0; transform: translate(-50%, 10px); } to { opacity: 1; transform: translate(-50%, 0); } }
 .welcome-screen.is-hidden { opacity: 0; visibility: hidden; pointer-events: none; }
 
-/* VIEWPORT & ENVELOPPE */
-.viewport { position: absolute; inset: 0; background: transparent; perspective: 2000px; }
-
-.envelope {
-    position: absolute; top: calc(50% - 35px); left: 50%;
-    width: 85%; max-width: 350px; aspect-ratio: 350 / 230;
-    transform: translate(-50%, -50%) scale(2.20); 
-    transform-style: preserve-3d; cursor: pointer; z-index: 10;
-    opacity: 0;
-    transition: transform 1.2s cubic-bezier(0.4, 0, 0.2, 1), top 1.2s cubic-bezier(0.4, 0, 0.2, 1), opacity 1s;
-}
-
+/* ENVELOPPE */
+.viewport { position: absolute; inset: 0; perspective: 2000px; }
+.envelope { position: absolute; top: calc(50% - 65px); left: 50%; width: 85%; max-width: 350px; aspect-ratio: 350 / 230; transform: translate(-50%, -50%) scale(2.20); transform-style: preserve-3d; cursor: pointer; z-index: 10; opacity: 0; transition: transform 1.2s cubic-bezier(0.4, 0, 0.2, 1), top 1.2s cubic-bezier(0.4, 0, 0.2, 1), opacity 1s; }
 .envelope.is-animating { animation: entranceSlide 2.4s forwards; }
 .envelope.is-active { top: 92%; transform: translate(-50%, -50%) scale(1.3); }
-
 .env-front { position: absolute; inset: 0; background: url('https://raw.githubusercontent.com/Romainpayan/MxR2026/refs/heads/main/front.png') center/cover; transform: translateZ(10px); z-index: 20; }
 .env-back { position: absolute; inset: 0; background: url('https://raw.githubusercontent.com/Romainpayan/MxR2026/refs/heads/main/back.png') center/cover; z-index: 1; transform: translateZ(0px); }
 
-/* CARTE */
+/* CARTE & SCROLL */
 .card { 
-    position: absolute; left: 50%; width: 90%; 
-    background: white; border-radius: 12px; 
-    top: 100px; height: 200px; z-index: 5;
-    overflow: hidden; /* Garde les arrondis */
+    position: absolute; left: 50%; width: 92%; background: white; border-radius: 12px; 
+    top: 5px; height: 350px; z-index: 5; overflow: hidden;
     transform: translate(-50%, 0) translateZ(5px);
-    transition: transform 1.2s cubic-bezier(0.19, 1, 0.22, 1), height 1.2s ease, top 1.2s ease;
-    visibility: hidden;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    transition: transform 1.5s cubic-bezier(0.19, 1, 0.22, 1), height 1.2s ease;
+    visibility: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.2);
 }
-
-.card.is-visible { 
-    visibility: visible;
-    transform: translate(-50%, -180px) translateZ(5px);
-}
+.card.is-visible { visibility: visible; transform: translate(-50%, -180px) translateZ(5px); }
 
 .card.is-deployed { 
-    /* Calculé pour s'arrêter pile à 5px du haut du wrapper */
-    transform: translate(-50%, -60vh) translateZ(5px);
-    height: calc(60vh - 40px);
+    transform: translate(-50%, calc(-68vh + 110px)) translateZ(5px); 
+    height: calc(68vh - 10px); 
 }
 
 .card-inner { 
-    height: 100%; width: 90%;
-    overflow-y: auto;
-    padding: 40px 20px;
-    display: flex; flex-direction: column; align-items: center; text-align: center;
-    box-sizing: border-box;
-    /* Cache la barre de scroll */
-    scrollbar-width: none; 
-    -ms-overflow-style: none;
+    height: 100%; width: 100%; overflow-y: auto; padding: 10px 20px;
+    display: flex; flex-direction: column; align-items: center;
+    box-sizing: border-box; text-align: center;
+    /* Aligné en haut par défaut pour éviter le saut visuel au déploiement */
+    justify-content: flex-start; 
+    scrollbar-width: none; -ms-overflow-style: none;
 }
 .card-inner::-webkit-scrollbar { display: none; }
 
 .names { color: var(--text-color-invitation); font-size: 1.4rem; font-weight: 700; margin-bottom: 20px; }
 
-/* SCEAU & EFFETS */
+/* ... (Animations Sceau et Particules) ... */
 .wax-seal-container { position: absolute; left: 50%; top: 20%; transform: translate(-50%, -50%) translateZ(15px); width: 100%; height: 80px; z-index: 30; pointer-events: none; }
 .seal-full, .seal-part { position: absolute; width: 100%; height: auto; left: 0; top: 0; }
-.seal-part { visibility: hidden; transition: all 0.6s ease-out; }
+.seal-part { visibility: hidden; transition: 0.6s; }
 .is-broken .seal-full { visibility: hidden; }
 .is-broken .seal-part { visibility: visible; }
 .is-separating .seal-top { transform: translateY(-40px) rotate(-15deg); opacity: 0; }
 .is-separating .seal-bottom { transform: translateY(50px) rotate(15deg); opacity: 0; }
 #floatingParticles { position: absolute; inset: 0; z-index: 1; }
-.floating-particle { position: absolute; top: 145%; left: 50%; background: white; border-radius: 50%; box-shadow: 0 0 3px 1px rgba(255, 255, 255, 0.6); opacity: 0; animation: orbit var(--duration) linear infinite; transition: opacity 1.5s; }
+.floating-particle { position: absolute; top: 145%; left: 50%; background: white; border-radius: 50%; opacity: 0; animation: orbit var(--duration) linear infinite; transition: 1.5s; }
 .is-glowing .floating-particle { opacity: var(--max-op); }
-.is-broken .floating-particle, .is-broken .seal-glow { opacity: 0 !important; }
 @keyframes orbit { from { transform: rotate(var(--start-angle)) translateX(var(--radius)) rotate(calc(-1 * var(--start-angle))); } to { transform: rotate(calc(var(--start-angle) + 360deg)) translateX(var(--radius)) rotate(calc(-1 * (var(--start-angle) + 360deg))); } }
-.seal-glow { position: absolute; width: 100%; top: 145%; left: 50%; transform: translate(-50%, -50%); opacity: 0; transition: opacity 0.5s; }
+.seal-glow { position: absolute; width: 100%; top: 145%; left: 50%; transform: translate(-50%, -50%); opacity: 0; transition: 0.5s; }
 .is-glowing .seal-glow { animation: pulseGlow 3s infinite; }
 @keyframes pulseGlow { 0%, 100% { opacity: 0.4; } 50% { opacity: 0.9; } }
-.env-flap { position: absolute; inset: 0; transform-origin: top; z-index: 25; transform-style: preserve-3d; transition: transform 1s; transform: translateZ(11px); }
+.env-flap { position: absolute; inset: 0; transform-origin: top; z-index: 25; transform-style: preserve-3d; transition: 1s; transform: translateZ(11px); }
 .envelope.is-opened .env-flap { transform: rotateX(180deg) translateZ(1px); }
 .flap-outer { position: absolute; inset: 0; background: url('https://raw.githubusercontent.com/Romainpayan/MxR2026/refs/heads/main/flap.png') center top / 100% auto no-repeat; backface-visibility: hidden; }
-.flap-inner { position: absolute; inset: 0; background: url('https://raw.githubusercontent.com/Romainpayan/MxR2026/refs/heads/main/lining.png') center bottom / 100% auto no-repeat; transform: rotateX(180deg) scale(1); backface-visibility: hidden; }
+.flap-inner { position: absolute; inset: 0; background: url('https://raw.githubusercontent.com/Romainpayan/MxR2026/refs/heads/main/lining.png') center bottom / 100% auto no-repeat; transform: rotateX(180deg); backface-visibility: hidden; }
 @keyframes entranceSlide { 0% { transform: translate(-100vw, 100vh) scale(0) rotate(-35deg); opacity: 0; } 100% { transform: translate(-50%, -50%) scale(2.20) rotate(0deg); opacity: 1; } }
 .white-flash-overlay { position: fixed; inset: 0; background: white; z-index: 9999; opacity: 0; pointer-events: none; }
 .white-flash-overlay.is-flashing { animation: flashEffect 0.6s forwards; }
+@keyframes flashEffect { 0% { opacity: 0; } 50% { opacity: 0.5; } 100% { opacity: 0; } }
