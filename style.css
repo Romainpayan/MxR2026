@@ -40,24 +40,30 @@ body { margin: 0; padding: 0; height: 100vh; background: #1a1a1a; font-family: '
     top: 5px; height: 350px; z-index: 5; overflow: hidden;
     transform: translate(-50%, 0) translateZ(5px);
     transition: transform 1.5s cubic-bezier(0.19, 1, 0.22, 1), height 1.2s ease;
-    visibility: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    visibility: hidden; box-shadow: -4px -4px 5px rgba(0,0,0,0.5);
 }
 .card.is-visible { visibility: visible; transform: translate(-50%, -180px) translateZ(5px); }
-
 .card.is-deployed { 
     transform: translate(-50%, calc(-68vh + 110px)) translateZ(5px); 
     height: calc(68vh - 10px); 
 }
 
 .card-inner { 
-    height: 100%; width: 100%; overflow-y: auto; padding: 10px 20px;
-    display: flex; flex-direction: column; align-items: center;
-    box-sizing: border-box; text-align: center;
-    /* Aligné en haut par défaut pour éviter le saut visuel au déploiement */
-    justify-content: flex-start; 
-    scrollbar-width: none; -ms-overflow-style: none;
+    height: 100%; width: 100%; 
+    overflow-y: auto; 
+    -webkit-overflow-scrolling: touch; /* Force le scroll fluide iOS */
+    touch-action: pan-y; /* Autorise le scroll vertical tactile */
+    padding: 0;
+    scrollbar-width: none;
 }
 .card-inner::-webkit-scrollbar { display: none; }
+
+.scroll-content {
+    padding: 40px 20px;
+    display: flex; flex-direction: column; align-items: center;
+    text-align: center;
+    min-height: 101%; /* Force le scroll même si le texte est court */
+}
 
 .names { color: var(--text-color-invitation); font-size: 1.4rem; font-weight: 700; margin-bottom: 20px; }
 
