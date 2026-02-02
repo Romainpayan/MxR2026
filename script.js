@@ -58,19 +58,28 @@ env.addEventListener("click", () => {
 });
 
 // Déploiement au scroll ou swipe
-const handleInteraction = () => {
+const handleInteraction = (e) => {
     if (cardState === 'peek') {
         card.classList.add("is-deployed");
         cardState = 'deployed';
-        // Le contenu est déjà aligné en haut via CSS (flex-start)
-        // On remet le scroll à zéro au cas où
         cardInner.scrollTop = 0;
     }
 };
 
+// On utilise wheel pour le PC et touchmove pour le mobile
 window.addEventListener("wheel", handleInteraction);
-window.addEventListener("touchmove", handleInteraction);
+window.addEventListener("touchstart", (e) => {
+    // On enregistre juste l'intention, le déploiement se fait au mouvement
+}, {passive: true});
 
-window.addEventListener("scroll", () => {
+window.addEventListener("touchmove", (e) => {
+    if (cardState === 'peek') {
+        handleInteraction();
+        e.preventDefault(); // Empêche le rebond du navigateur pendant le déploiement
+    }
+}, {passive: false});
+
+// Bloquer le scroll principal UNIQUEMENT si la carte n'est pas déployée
+window.addEventListener("scroll", (e) => {
     if (window.scrollY > 0) window.scrollTo(0,0);
 });
