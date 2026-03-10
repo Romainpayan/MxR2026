@@ -2,8 +2,11 @@ const env = document.getElementById("envelope");
 const waxSeal = document.getElementById("waxSeal");
 const card = document.getElementById("card");
 const cardInner = document.getElementById("cardInner");
+const scrollContent = document.getElementById("scrollContent");
 const welcomeScreen = document.getElementById("welcomeScreen");
 const flashOverlay = document.getElementById("flashOverlay");
+const rsvpBtn = document.getElementById("submitRsvp");
+const thanksMsg = document.getElementById("thanksMessage");
 
 let isIntroFinished = false;
 let cardState = 'hidden'; 
@@ -19,6 +22,74 @@ welcomeScreen.addEventListener("click", () => {
         waxSeal.classList.add("is-glowing");
         isIntroFinished = true;
     }, 2400); 
+});
+
+env.addEventListener("click", () => {
+    if (!isIntroFinished || cardState !== 'hidden') return;
+    waxSeal.classList.remove("is-glowing");
+    waxSeal.classList.add("is-broken");
+    setTimeout(() => {
+        flashOverlay.classList.add("is-flashing");
+        waxSeal.classList.add("is-separating");
+    }, 400);
+    setTimeout(() => {
+        env.classList.add("is-active", "is-opened");
+        setTimeout(() => {
+            card.classList.add("is-visible");
+            cardState = 'peek';
+        }, 800);
+    }, 1000); 
+});
+
+const handleInteraction = () => {
+    if (cardState === 'peek') {
+        card.classList.add("is-deployed");
+        cardState = 'deployed';
+    }
+};
+
+// Interaction sur la carte elle-même
+card.addEventListener("click", handleInteraction);
+window.addEventListener("wheel", (e) => {
+    if (cardState === 'peek' && e.deltaY > 0) handleInteraction();
+});
+window.addEventListener("touchmove", () => { 
+    if (cardState === 'peek') handleInteraction(); 
+}, {passive: true});
+
+// ANIMATION DE FIN
+rsvpBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    rsvpBtn.disabled = true;
+    rsvpBtn.innerText = "ENVOI...";
+
+    // 1. On rentre la carte dans l'enveloppe
+    card.classList.remove("is-deployed");
+    card.classList.add("is-reversing");
+    cardState = 'closing';
+
+    setTimeout(() => {
+        // 2. On ferme le flap (rabat)
+        env.classList.remove("is-opened");
+        
+        setTimeout(() => {
+            // 3. On cache la carte physiquement pour ne pas qu'elle dépasse
+            card.style.display = 'none';
+            
+            // 4. L'enveloppe se recentre
+            env.classList.add("is-recentered");
+            
+            setTimeout(() => {
+                // 5. Elle part (s'envoie)
+                env.classList.add("is-sent");
+                
+                // 6. Message de remerciement
+                setTimeout(() => {
+                    thanksMsg.classList.add("is-visible");
+                }, 800);
+            }, 800);
+        }, 800);
+    }, 600);
 });
 
 function createFloatingAura() {
@@ -39,47 +110,3 @@ function createFloatingAura() {
         container.appendChild(p);
     }
 }
-
-env.addEventListener("click", () => {
-    if (!isIntroFinished || cardState !== 'hidden') return;
-    waxSeal.classList.remove("is-glowing");
-    waxSeal.classList.add("is-broken");
-    setTimeout(() => {
-        flashOverlay.classList.add("is-flashing");
-        waxSeal.classList.add("is-separating");
-    }, 400);
-    setTimeout(() => {
-        env.classList.add("is-active", "is-opened");
-        setTimeout(() => {
-            card.classList.add("is-visible");
-            cardState = 'peek';
-        }, 800);
-    }, 1000); 
-});
-
-// Déploiement au scroll ou swipe
-const handleInteraction = (e) => {
-    if (cardState === 'peek') {
-        card.classList.add("is-deployed");
-        cardState = 'deployed';
-        cardInner.scrollTop = 0;
-    }
-};
-
-// On utilise wheel pour le PC et touchmove pour le mobile
-window.addEventListener("wheel", handleInteraction);
-window.addEventListener("touchstart", (e) => {
-    // On enregistre juste l'intention, le déploiement se fait au mouvement
-}, {passive: true});
-
-window.addEventListener("touchmove", (e) => {
-    if (cardState === 'peek') {
-        handleInteraction();
-        e.preventDefault(); // Empêche le rebond du navigateur pendant le déploiement
-    }
-}, {passive: false});
-
-// Bloquer le scroll principal UNIQUEMENT si la carte n'est pas déployée
-window.addEventListener("scroll", (e) => {
-    if (window.scrollY > 0) window.scrollTo(0,0);
-});
