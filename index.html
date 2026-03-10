@@ -4,25 +4,31 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Invitation Maëva & Romain</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Afacad:wght@400;500;600;700&family=Cinzel:wght@400;700&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="main-wrapper">
         <div id="welcomeScreen" class="welcome-screen">
             <div class="welcome-content">
-                <h1 class="splash-text text-top">VOUS AVEZ REÇU<br>UNE INVITATION</h1>
+                <h1 class="splash-text text-top">Vous<br>avez reçu<br>une Invitation</h1>
                 <div class="splash-logo-row">
                     <span class="splash-date">XI.IX</span>
                     <img src="https://raw.githubusercontent.com/Romainpayan/MxR2026/refs/heads/main/gold-seal.png" class="splash-logo">
                     <span class="splash-date">XXVI</span>
                 </div>
-                <h2 class="splash-text text-bottom">CLIQUEZ POUR<br>CONTINUER</h2>
+                <h2 class="splash-text text-bottom">CLIQUEZ<br>POUR<br>OUVRIR</h2>
             </div>
         </div>
 
         <div class="viewport">
             <div class="white-flash-overlay" id="flashOverlay"></div>
+            <div id="thanksMessage" class="thanks-message">
+                <h2 class="splash-text final-text">MERCI POUR<br>VOTRE RÉPONSE</h2>
+            </div>
+
             <div class="envelope" id="envelope">
                 <div class="env-flap" id="flap">
                     <div class="flap-outer">
@@ -39,21 +45,67 @@
 
                 <div class="card" id="card">
                     <div class="card-inner" id="cardInner">
-                        <div class="scroll-content">
-                            <h2 class="names">MAËVA & ROMAIN</h2>
-                            <p>Sont très heureux de vous convier pour célébrer à leur côté leur mariage.</p>
-                            <div style="height: 1000px; margin: 30px 0; border-left: 2px solid #f9cb8d; padding-left: 15px; text-align: left;">
-                                <p style="padding-top: 20px;">Le scroll mobile est maintenant activé.</p>
-                                <p style="margin-top: 400px;">Vous pouvez descendre tout en bas.</p>
+                        <div class="scroll-content" id="scrollContent">
+                            <img src="https://raw.githubusercontent.com/Romainpayan/MxR2026/refs/heads/main/HEADER.png" alt="Header" class="card-img">
+                            <img src="https://raw.githubusercontent.com/Romainpayan/MxR2026/refs/heads/main/PROGRAMME.png" alt="Programme" class="card-img">
+                            
+                            <div class="custom-rsvp-form">
+                                <p class="form-instruction">MERCI DE NOUS RETOURNER<br>CE MOT COMPLÉTÉ AVANT LE <span>30 AVRIL 2026</span><br>POUR CONFIRMER VOTRE PRÉSENCE.</p>
+                                
+                                <div class="input-row">
+                                    <label>NOM :</label>
+                                    <input type="text" id="guestLastName" class="line-input">
+                                </div>
+                                <div class="input-row">
+                                    <label>PRÉNOM :</label>
+                                    <input type="text" id="guestFirstName" class="line-input">
+                                </div>
+
+                                <div class="choice-row">
+                                    <label>JE SERAI PRÉSENT.E :</label>
+                                    <div class="options">
+                                        <span>OUI</span>
+                                        <input type="radio" name="presence" value="yes" id="pres-yes">
+                                        <label for="pres-yes" class="square-radio"></label>
+                                        <span>NON</span>
+                                        <input type="radio" name="presence" value="no" id="pres-no">
+                                        <label for="pres-no" class="square-radio"></label>
+                                    </div>
+                                </div>
+
+                                <div class="choice-row">
+                                    <label>J'AI DES ALLERGIES ALIMENTAIRES :</label>
+                                    <div class="options">
+                                        <span>OUI</span>
+                                        <input type="radio" name="allergies" value="yes" id="all-yes">
+                                        <label for="all-yes" class="square-radio"></label>
+                                        <span>NON</span>
+                                        <input type="radio" name="allergies" value="no" id="all-no">
+                                        <label for="all-no" class="square-radio"></label>
+                                    </div>
+                                </div>
+
+                                <div class="details-section">
+                                    <p>SI OUI, MERCI DE PRÉCISER LESQUELLES CI-DESSOUS :</p>
+                                    <input type="text" id="allergyDetails" class="line-input">
+                                </div>
+
+                                <p class="adults-only">POUR QUE TOUS PROFITENT AU MAXIMUM DE CETTE JOURNÉE,<br>NOUS AVONS PRIS LA DÉCISION DE N'INVITER QUE LES ADULTES.</p>
+                                <p class="form-footer">MERCI À VOUS ET À TRÈS VITE !</p>
+
+                                <button id="submitRsvp" class="final-rsvp-button">ENVOYER MA RÉPONSE</button>
+                                
+                                <div class="form-logo-bottom">
+                                    <img src="https://raw.githubusercontent.com/Romainpayan/MxR2026/refs/heads/main/gold-seal.png" alt="logo footer">
+                                </div>
                             </div>
-                            <p>Nous avons hâte de vous retrouver !</p>
-                            <div style="height: 50px;"></div>
+                            <div style="height: 120px;"></div>
                         </div>
                     </div>
                 </div>
 
                 <div class="env-front"></div>
-                <div class="env-back"></div>
+                <div class="env-back" id="envBack"></div>
             </div>
         </div>
     </div>
