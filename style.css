@@ -14,17 +14,35 @@ body { margin: 0; padding: 0; height: 100vh; background: #1a1a1a; font-family: '
     overflow: hidden;
 }
 
-/* SPLASH SCREEN */
-.welcome-screen { position: absolute; inset: 0; z-index: 10000; display: flex; justify-content: center; align-items: center; cursor: pointer; transition: opacity 0.8s ease, visibility 0.8s; }
-.welcome-content { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; width: 100%; transform: translateY(-25px); }
-.splash-logo-row { display: flex; align-items: center; justify-content: center; gap: 10px; }
+/* SPLASH SCREEN - CORRECTION CENTRAGE VERTICAL ET SAUT */
+.welcome-screen { 
+    position: absolute; inset: 0; z-index: 10000; 
+    display: flex; justify-content: center; align-items: center; 
+    cursor: pointer; transition: opacity 0.8s ease, visibility 0.8s; 
+}
+.welcome-content { 
+    width: 100%; display: flex; flex-direction: column; align-items: center;transform: translateY(-20px); 
+}
+.splash-text-container {
+    display: flex; flex-direction: column; align-items: center; gap: 10px;
+}
+.splash-logo-row { display: flex; align-items: center; justify-content: center; gap: 15px; }
 .splash-logo { width: 160px; height: auto; }
-.splash-text { font-family: 'Cinzel', serif; font-size: 1.2rem; font-weight: 400; letter-spacing: 0.05rem; color: var(--gold-splash); line-height:1.3rem; text-align: center; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
+.splash-text { 
+    font-family: 'Cinzel', serif; font-size: 1.2rem; font-weight: 400; 
+    letter-spacing: 0.05rem; color: var(--gold-splash); line-height:1.3rem; 
+    text-align: center; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); 
+}
 .splash-date { font-family: 'Cinzel', serif; font-size: 1.2rem; color: var(--gold-splash); }
 
-.text-top { position: absolute; left: 50%; transform: translateX(-50%); bottom: calc(48% + 90px); opacity: 0; animation: fadeInText 1s ease forwards 0.5s; }
-.text-bottom { position: absolute; left: 50%; transform: translateX(-50%); top: calc(48% + 90px); opacity: 0; animation: fadeInText 1s ease forwards 1.8s; }
-@keyframes fadeInText { from { opacity: 0; transform: translate(-50%, 10px); } to { opacity: 1; transform: translate(-50%, 0); } }
+.text-top { opacity: 0; animation: fadeInSimple 1s ease forwards 0.5s; }
+.text-bottom { opacity: 0; animation: fadeInSimple 1s ease forwards 1.8s; }
+
+@keyframes fadeInSimple { 
+    from { opacity: 0; transform: translateY(10px); } 
+    to { opacity: 1; transform: translateY(0); } 
+}
+
 .welcome-screen.is-hidden { opacity: 0; visibility: hidden; pointer-events: none; }
 
 /* ENVELOPPE */
@@ -49,6 +67,7 @@ body { margin: 0; padding: 0; height: 100vh; background: #1a1a1a; font-family: '
     position: absolute; left: 50%; width: 92%; border-radius: 4px; top: 5px; height: 350px; 
     background: var(--form-bg); 
     transform: translate(-50%, 0) translateZ(10px); 
+    /* Correction : Pas de transition sur l'opacité pour que l'apparition soit nette */
     transition: transform 0.8s cubic-bezier(0.19, 1, 0.22, 1), height 0.8s ease; 
     visibility: hidden; overflow: hidden; pointer-events: none; z-index: 5;
     box-shadow: 0 10px 30px rgba(0,0,0,0.3);
@@ -79,19 +98,21 @@ body { margin: 0; padding: 0; height: 100vh; background: #1a1a1a; font-family: '
     z-index: 19; 
 }
 
-.card-inner { height: 100%; width: 100%; overflow-y: scroll !important; -webkit-overflow-scrolling: touch; scrollbar-width: none; background: transparent; }
+/* Correction : On bloque le scroll tant qu'on n'est pas déployé */
+.card-inner { 
+    height: 100%; width: 100%; 
+    overflow-y: hidden; /* Par défaut verrouillé */
+    -webkit-overflow-scrolling: touch; scrollbar-width: none; background: transparent; 
+}
+.card.is-scrollable .card-inner {
+    overflow-y: scroll !important;
+}
+
 .card-inner::-webkit-scrollbar { display: none; }
 
 .scroll-content { 
-    padding: 0; 
-    display: flex; 
-    flex-direction: column; 
-    align-items: center; 
-    text-align: center; 
-    min-height: 100%; 
-    background: var(--paper-texture);
-    background-repeat: repeat-y;
-    background-size: 100% auto;
+    padding: 0; display: flex; flex-direction: column; align-items: center; text-align: center; min-height: 100%; 
+    background: var(--paper-texture); background-repeat: repeat-y; background-size: 100% auto;
 }
 
 .card-img { width: 100%; height: auto; display: block; pointer-events: none; }
@@ -110,33 +131,19 @@ input[type="radio"] { display: none; }
 .square-radio { width: 18px; height: 18px; border: 1.5px solid var(--text-dark); border-radius: 5px; display: inline-block; cursor: pointer; position: relative; background: none; }
 input[type="radio"]:checked + .square-radio::after { content: ''; position: absolute; inset: 3px; background: var(--text-dark); }
 
-/* AJUSTEMENTS CIBLÉS POUR L'ALIGNEMENT DU CHAMP ALLERGIE */
 .details-section { margin-top: 20px; text-align: left; width: 100%; }
 .details-section p { font-family: 'Afacad', serif; font-size: 0.7rem; font-weight: 700; margin-bottom: 5px; }
 
-#allergyDetails {
-    width: 95%;      /* Prend toute la largeur */
-    border-left: 1px solid transparent; /* Rendre les bordures latérales transparentes */
-    border-right: 1px solid transparent; 
-}
+#allergyDetails { width: 95%; border-left: 1px solid transparent; border-right: 1px solid transparent; }
 
-.adults-only { 
-    margin: 30px 10px 0 10px; 
-    font-size: 0.75rem; 
-    line-height: 1.4; 
-    font-weight: 600; 
-    font-style: italic;
-    letter-spacing: 0.02rem;
-}
-
+.adults-only { margin: 30px 10px 0 10px; font-size: 0.75rem; line-height: 1.4; font-weight: 600; font-style: italic; letter-spacing: 0.02rem; }
 .form-footer { margin-top: 15px; font-family: 'Afacad', serif; font-weight: 700; font-size: 0.8rem; }
 .final-rsvp-button { margin-top: 15px; background: var(--text-dark); color: white; border: none; border-radius: 30px; padding: 10px 30px; font-family: 'Afacad', sans-serif; font-weight: 400; cursor: pointer; transition: 0.3s; font-size: 0.8rem; box-shadow: 0 4px 10px rgba(0,0,0,0.2); -webkit-appearance: none; }
-.final-rsvp-button:active { transform: scale(0.95); }
 
-.form-logo-bottom { margin-top: 30px; opacity: 0.9; }
+.form-logo-bottom { margin-top: 30px; opacity: 1; }
 .form-logo-bottom img { width: 80px; }
 
-/* WAX SEAL & EFFECTS */
+/* EFFETS SCEAU */
 .wax-seal-container { position: absolute; left: 50%; top: 20%; transform: translate(-50%, -50%) translateZ(1px); width: 100%; height: 80px; z-index: 30; pointer-events: none; }
 .seal-full, .seal-part { position: absolute; width: 100%; height: auto; left: 0; top: 0; }
 .seal-part { visibility: hidden; transition: 0.6s; }
@@ -156,18 +163,10 @@ input[type="radio"]:checked + .square-radio::after { content: ''; position: abso
 .white-flash-overlay.is-flashing { animation: flashEffect 0.6s forwards; }
 
 .envelope.is-recentered { top: calc(50% - 65px) !important; transform: translate(-50%, -50%) scale(1.76) !important; transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1); }
-
 .flap-outer { position: absolute; inset: 0; background: url('https://raw.githubusercontent.com/Romainpayan/MxR2026/refs/heads/main/flap.png') center top / 101% auto no-repeat; backface-visibility: hidden; }
 .flap-inner { position: absolute; inset: 0; background: url('https://raw.githubusercontent.com/Romainpayan/MxR2026/refs/heads/main/lining.png') center bottom / 101% auto no-repeat; transform: rotateX(180deg); backface-visibility: hidden; }
 
 .thanks-message { position: absolute; top: 45%; left: 50%; transform: translate(-50%, -50%); width: 100%; display: flex; justify-content: center; align-items: center; z-index: 500; opacity: 0; visibility: hidden; transition: opacity 1s ease; pointer-events: none; }
 .thanks-message.is-visible { opacity: 1; visibility: visible; }
-
 .envelope.is-sent { transform: translate(180vw, -120%) scale(0.1) rotate(45deg) !important; transition: transform 1.4s cubic-bezier(0.45, 0, 1, 1), opacity 1s !important; opacity: 0; }
-
-.card.is-reversing { 
-    visibility: visible !important;
-    z-index: 5 !important; 
-    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1) !important; 
-    transform: translate(-50%, 40px) translateZ(5px) !important; 
-}
+.card.is-reversing { visibility: visible !important; z-index: 5 !important; transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1) !important; transform: translate(-50%, 40px) translateZ(5px) !important; }
