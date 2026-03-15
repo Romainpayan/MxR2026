@@ -10,17 +10,13 @@ const openSfx = new Audio('https://github.com/Romainpayan/MxR2026/raw/refs/heads
 const slideSfx = new Audio('https://github.com/Romainpayan/MxR2026/raw/refs/heads/main/slide.wav');
 const swooshSfx = new Audio('https://github.com/Romainpayan/MxR2026/raw/refs/heads/main/swoosh.mp3');
 
-// --- 2. RÉGLAGES DES VOLUMES (0.0 à 1.0) ---
-ambMusic.volume = 0.4;     
-ambMusic.loop = true;      
-particleSfx.volume = 0.2;  
-particleSfx.loop = true;   
-waxSealSfx.volume = 0.8;
-openSfx.volume = 0.3;
-slideSfx.volume = 0.3;
-swooshSfx.volume = 0.3;    
+// --- 2. RÉGLAGES DES VOLUMES ---
+ambMusic.volume = 0.4;     ambMusic.loop = true;      
+particleSfx.volume = 0.3;  particleSfx.loop = true;   
+waxSealSfx.volume = 0.8;   openSfx.volume = 0.7;
+slideSfx.volume = 0.6;     swooshSfx.volume = 0.4;    
 
-// --- 3. RÉGLAGES DES DÉLAIS (en millisecondes) ---
+// --- 3. RÉGLAGES DES DÉLAIS ---
 const DELAY_INTRO_SLIDE = 1000;
 const DELAY_INTRO_MUSIC = 0;
 const DELAY_OPEN_SEAL = 0;      
@@ -29,13 +25,11 @@ const DELAY_CLOSE_FLAP = 0;
 const DELAY_SENT_SLIDE = 0;  
 const SWOOSH_COOLDOWN = 1500; 
 
-// --- VARIABLES DE CONTRÔLE INTERNE ---
 let isSwooshReady = true;
 let isIntroFinished = false;
 let cardState = 'hidden'; 
 
 // --- FONCTIONS UTILITAIRES ---
-
 function playWithDelay(audio, ms) {
     setTimeout(() => {
         audio.currentTime = 0; 
@@ -43,12 +37,10 @@ function playWithDelay(audio, ms) {
     }, ms);
 }
 
-// Fonction pour le fondu de sortie de la musique
 function fadeOutAudio(audio, duration) {
     const startVolume = audio.volume;
-    const interval = 50; // On baisse le son toutes les 50ms
+    const interval = 50; 
     const step = startVolume / (duration / interval);
-
     const fade = setInterval(() => {
         if (audio.volume > step) {
             audio.volume -= step;
@@ -70,7 +62,6 @@ const flashOverlay = document.getElementById("flashOverlay");
 const rsvpBtn = document.getElementById("submitRsvp");
 const thanksMsg = document.getElementById("thanksMessage");
 
-// INITIALISATION
 window.addEventListener('load', () => { 
     createFloatingAura(); 
 });
@@ -78,13 +69,10 @@ window.addEventListener('load', () => {
 // 4. ÉCRAN D'ACCUEIL
 welcomeScreen.addEventListener("click", () => {
     welcomeScreen.classList.add("is-hidden");
-    
     playWithDelay(ambMusic, DELAY_INTRO_MUSIC);
     playWithDelay(slideSfx, DELAY_INTRO_SLIDE);
-
     env.classList.add("is-animating");
     env.style.opacity = "1";
-    
     setTimeout(() => {
         env.classList.remove("is-animating");
         waxSeal.classList.add("is-glowing");
@@ -96,21 +84,16 @@ welcomeScreen.addEventListener("click", () => {
 // 5. OUVERTURE DE L'ENVELOPPE
 env.addEventListener("click", () => {
     if (!isIntroFinished || cardState !== 'hidden') return;
-    
     particleSfx.pause();
     particleSfx.currentTime = 0;
-
     playWithDelay(waxSealSfx, DELAY_OPEN_SEAL);
     playWithDelay(openSfx, DELAY_OPEN_PAPER);
-
     waxSeal.classList.remove("is-glowing");
     waxSeal.classList.add("is-broken");
-    
     setTimeout(() => {
         flashOverlay.classList.add("is-flashing");
         waxSeal.classList.add("is-separating");
     }, 400);
-
     setTimeout(() => {
         env.classList.add("is-active", "is-opened");
         setTimeout(() => {
@@ -120,19 +103,26 @@ env.addEventListener("click", () => {
     }, 1000); 
 });
 
-// 6. DÉPLOIEMENT ET SCROLL
+// 6. DÉPLOIEMENT ET POINT D'ÉTAPE DU SCROLL
 const handleInteraction = () => {
     if (cardState === 'peek') {
         card.classList.add("is-deployed");
         cardState = 'deployed';
         playWithDelay(swooshSfx, 0);
+
+        // Correction : On attend la fin de l'animation de déploiement (800ms) 
+        // avant d'autoriser le scroll interne
+        setTimeout(() => {
+            card.classList.add("is-scrollable");
+        }, 800);
     }
 };
 
 card.addEventListener("click", handleInteraction);
 
 cardInner.addEventListener("scroll", () => {
-    if (cardState === 'deployed' && isSwooshReady) {
+    // Le swoosh de scroll n'est actif que si on est en mode scrollable
+    if (card.classList.contains("is-scrollable") && isSwooshReady) {
         isSwooshReady = false;
         swooshSfx.currentTime = 0;
         swooshSfx.play();
@@ -140,17 +130,22 @@ cardInner.addEventListener("scroll", () => {
     }
 }, {passive: true});
 
+// Sur mobile, le touchmove déclenche le déploiement
+window.addEventListener("touchmove", (e) => { 
+    if (cardState === 'peek') {
+        handleInteraction();
+        // Optionnel : on empêche le comportement par défaut pendant le déploiement
+        if (e.cancelable) e.preventDefault();
+    }
+}, {passive: false});
+
 window.addEventListener("wheel", (e) => {
     if (cardState === 'peek' && e.deltaY > 0) handleInteraction();
 });
-window.addEventListener("touchmove", () => { 
-    if (cardState === 'peek') handleInteraction(); 
-}, {passive: true});
 
 // 7. GESTION DU FORMULAIRE ET ENVOI GOOGLE
 rsvpBtn.addEventListener("click", (e) => {
     e.stopPropagation();
-
     const lastName = document.getElementById("guestLastName").value.trim();
     const firstName = document.getElementById("guestFirstName").value.trim();
     const presence = document.querySelector('input[name="presence"]:checked')?.value;
@@ -172,7 +167,6 @@ rsvpBtn.addEventListener("click", (e) => {
 
     rsvpBtn.disabled = true;
     rsvpBtn.innerText = "ENVOI EN COURS...";
-
     const scriptURL = 'https://script.google.com/macros/s/AKfycbyyFBBnE9OKFGiiSfSVtvzF1IgyhDyz9nPSZeNfLWY9Xb9kgqVOLam1zd4TGp1g5Vo80Q/exec';
 
     fetch(scriptURL, {
@@ -195,25 +189,19 @@ rsvpBtn.addEventListener("click", (e) => {
 
 // 8. ANIMATION DE SORTIE
 function lancerAnimationSucces() {
-    // --- FADE OUT DE LA MUSIQUE (sur 2 secondes) ---
     fadeOutAudio(ambMusic, 7000);
-
     card.classList.remove("is-deployed");
     card.classList.add("is-reversing");
     cardState = 'closing';
-
     setTimeout(() => {
         playWithDelay(openSfx, DELAY_CLOSE_FLAP);
         env.classList.remove("is-opened");
-        
         setTimeout(() => {
             card.style.display = 'none';
             env.classList.add("is-recentered");
-            
             setTimeout(() => {
                 playWithDelay(slideSfx, DELAY_SENT_SLIDE);
                 env.classList.add("is-sent");
-                
                 setTimeout(() => {
                     thanksMsg.classList.add("is-visible");
                 }, 800);
@@ -226,7 +214,6 @@ function lancerAnimationSucces() {
 function createFloatingAura() {
     const container = document.getElementById("floatingParticles");
     if(!container) return;
-    
     for (let i = 0; i < 150; i++) {
         const p = document.createElement('div');
         p.className = 'floating-particle';
@@ -235,9 +222,7 @@ function createFloatingAura() {
         const startAngle = Math.random() * 360;
         const maxOp = Math.random() * 0.6 + 0.2; 
         const size = Math.random() < 0.5 ? 1 : 2; 
-        
-        p.style.width = size + 'px'; 
-        p.style.height = size + 'px';
+        p.style.width = size + 'px'; p.style.height = size + 'px';
         p.style.setProperty('--radius', radius + 'px');
         p.style.setProperty('--duration', duration + 's');
         p.style.setProperty('--start-angle', startAngle + 'deg');
