@@ -23,7 +23,7 @@ const DELAY_OPEN_SEAL = 0;
 const DELAY_OPEN_PAPER = 1000;  
 const DELAY_CLOSE_FLAP = 0;   
 const DELAY_SENT_SLIDE = 0;  
-const SWOOSH_COOLDOWN = 1500; 
+const SWOOSH_COOLDOWN = 1000; 
 
 let isSwooshReady = true;
 let isIntroFinished = false;
