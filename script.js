@@ -14,10 +14,10 @@ const swooshSfx = new Audio('https://github.com/Romainpayan/MxR2026/raw/refs/hea
 ambMusic.volume = 0.4;     ambMusic.loop = true;      
 particleSfx.volume = 0.3;  particleSfx.loop = true;   
 waxSealSfx.volume = 0.8;   openSfx.volume = 0.7;
-slideSfx.volume = 0.6;     swooshSfx.volume = 0.4;    
+slideSfx.volume = 0.6;     swooshSfx.volume = 1;    
 
 // --- 3. RÉGLAGES DES DÉLAIS ---
-const DELAY_INTRO_SLIDE = 1000;
+const DELAY_INTRO_SLIDE = 900;
 const DELAY_INTRO_MUSIC = 0;
 const DELAY_OPEN_SEAL = 0;      
 const DELAY_OPEN_PAPER = 1000;  
