@@ -1,40 +1,94 @@
 /**
  * SCRIPT RSVP MARIAGE - Maëva & Romain
- * Gestion des animations, de la validation et de l'envoi vers Google Sheets
  */
 
-// 1. SÉLECTEURS
+// --- 1. CONFIGURATION DES SOURCES AUDIO ---
+const ambMusic = new Audio('https://github.com/Romainpayan/MxR2026/raw/refs/heads/main/amb.mp3');
+const particleSfx = new Audio('https://github.com/Romainpayan/MxR2026/raw/refs/heads/main/particles.mp3');
+const waxSealSfx = new Audio('https://github.com/Romainpayan/MxR2026/raw/refs/heads/main/waxseal.wav');
+const openSfx = new Audio('https://github.com/Romainpayan/MxR2026/raw/refs/heads/main/open.wav');
+const slideSfx = new Audio('https://github.com/Romainpayan/MxR2026/raw/refs/heads/main/slide.wav');
+const swooshSfx = new Audio('https://github.com/Romainpayan/MxR2026/raw/refs/heads/main/swoosh.mp3');
+
+// --- 2. RÉGLAGES DES VOLUMES (0.0 à 1.0) ---
+ambMusic.volume = 0.4;     
+ambMusic.loop = true;      
+particleSfx.volume = 0.2;  
+particleSfx.loop = true;   
+waxSealSfx.volume = 0.8;
+openSfx.volume = 0.3;
+slideSfx.volume = 0.3;
+swooshSfx.volume = 0.3;    
+
+// --- 3. RÉGLAGES DES DÉLAIS (en millisecondes) ---
+const DELAY_INTRO_SLIDE = 1000;
+const DELAY_INTRO_MUSIC = 0;
+const DELAY_OPEN_SEAL = 0;      
+const DELAY_OPEN_PAPER = 1000;  
+const DELAY_CLOSE_FLAP = 0;   
+const DELAY_SENT_SLIDE = 0;  
+const SWOOSH_COOLDOWN = 1500; 
+
+// --- VARIABLES DE CONTRÔLE INTERNE ---
+let isSwooshReady = true;
+let isIntroFinished = false;
+let cardState = 'hidden'; 
+
+// --- FONCTIONS UTILITAIRES ---
+
+function playWithDelay(audio, ms) {
+    setTimeout(() => {
+        audio.currentTime = 0; 
+        audio.play();
+    }, ms);
+}
+
+// Fonction pour le fondu de sortie de la musique
+function fadeOutAudio(audio, duration) {
+    const startVolume = audio.volume;
+    const interval = 50; // On baisse le son toutes les 50ms
+    const step = startVolume / (duration / interval);
+
+    const fade = setInterval(() => {
+        if (audio.volume > step) {
+            audio.volume -= step;
+        } else {
+            audio.volume = 0;
+            audio.pause();
+            clearInterval(fade);
+        }
+    }, interval);
+}
+
+// --- SÉLECTEURS ---
 const env = document.getElementById("envelope");
 const waxSeal = document.getElementById("waxSeal");
 const card = document.getElementById("card");
+const cardInner = document.getElementById("cardInner");
 const welcomeScreen = document.getElementById("welcomeScreen");
 const flashOverlay = document.getElementById("flashOverlay");
 const rsvpBtn = document.getElementById("submitRsvp");
 const thanksMsg = document.getElementById("thanksMessage");
 
-// 2. VARIABLES D'ÉTAT
-let isIntroFinished = false;
-let cardState = 'hidden'; 
-
-// 3. INITIALISATION
+// INITIALISATION
 window.addEventListener('load', () => { 
     createFloatingAura(); 
-    
-    // Vérification si la personne a déjà répondu sur cet appareil
-    if (localStorage.getItem('rsvp_fait') === 'true') {
-        // Optionnel : on peut modifier le bouton ou laisser l'utilisateur renvoyer pour un proche
-        console.log("L'utilisateur a déjà envoyé une réponse précédemment.");
-    }
 });
 
-// 4. ÉCRAN D'ACCUEIL (SPLASH SCREEN)
+// 4. ÉCRAN D'ACCUEIL
 welcomeScreen.addEventListener("click", () => {
     welcomeScreen.classList.add("is-hidden");
+    
+    playWithDelay(ambMusic, DELAY_INTRO_MUSIC);
+    playWithDelay(slideSfx, DELAY_INTRO_SLIDE);
+
     env.classList.add("is-animating");
     env.style.opacity = "1";
+    
     setTimeout(() => {
         env.classList.remove("is-animating");
         waxSeal.classList.add("is-glowing");
+        particleSfx.play();
         isIntroFinished = true;
     }, 2400); 
 });
@@ -43,6 +97,12 @@ welcomeScreen.addEventListener("click", () => {
 env.addEventListener("click", () => {
     if (!isIntroFinished || cardState !== 'hidden') return;
     
+    particleSfx.pause();
+    particleSfx.currentTime = 0;
+
+    playWithDelay(waxSealSfx, DELAY_OPEN_SEAL);
+    playWithDelay(openSfx, DELAY_OPEN_PAPER);
+
     waxSeal.classList.remove("is-glowing");
     waxSeal.classList.add("is-broken");
     
@@ -60,15 +120,26 @@ env.addEventListener("click", () => {
     }, 1000); 
 });
 
-// 6. DÉPLOIEMENT DE LA CARTE
+// 6. DÉPLOIEMENT ET SCROLL
 const handleInteraction = () => {
     if (cardState === 'peek') {
         card.classList.add("is-deployed");
         cardState = 'deployed';
+        playWithDelay(swooshSfx, 0);
     }
 };
 
 card.addEventListener("click", handleInteraction);
+
+cardInner.addEventListener("scroll", () => {
+    if (cardState === 'deployed' && isSwooshReady) {
+        isSwooshReady = false;
+        swooshSfx.currentTime = 0;
+        swooshSfx.play();
+        setTimeout(() => { isSwooshReady = true; }, SWOOSH_COOLDOWN);
+    }
+}, {passive: true});
+
 window.addEventListener("wheel", (e) => {
     if (cardState === 'peek' && e.deltaY > 0) handleInteraction();
 });
@@ -80,20 +151,17 @@ window.addEventListener("touchmove", () => {
 rsvpBtn.addEventListener("click", (e) => {
     e.stopPropagation();
 
-    // Récupération des données
     const lastName = document.getElementById("guestLastName").value.trim();
     const firstName = document.getElementById("guestFirstName").value.trim();
     const presence = document.querySelector('input[name="presence"]:checked')?.value;
     const hasAllergies = document.querySelector('input[name="allergies"]:checked')?.value || "no";
     const allergyDetails = document.getElementById("allergyDetails").value.trim() || "Aucun";
 
-    // --- VALIDATION STRICTE ---
     if (!lastName || !firstName || !presence) {
         alert("Oups ! Merci de renseigner ton Nom, Prénom et ta présence avant d'envoyer.");
         return;
     }
 
-    // Préparation de l'objet pour Google
     const data = {
         lastName: lastName.toUpperCase(),
         firstName: firstName,
@@ -102,24 +170,19 @@ rsvpBtn.addEventListener("click", (e) => {
         allergyDetails: allergyDetails
     };
 
-    // UI : On bloque le bouton
     rsvpBtn.disabled = true;
     rsvpBtn.innerText = "ENVOI EN COURS...";
 
-    // URL DE TON SCRIPT GOOGLE (À REMPLACER !)
     const scriptURL = 'https://script.google.com/macros/s/AKfycbyyFBBnE9OKFGiiSfSVtvzF1IgyhDyz9nPSZeNfLWY9Xb9kgqVOLam1zd4TGp1g5Vo80Q/exec';
 
     fetch(scriptURL, {
         method: 'POST',
-        mode: 'no-cors', // Nécessaire pour Google Apps Script
+        mode: 'no-cors',
         cache: 'no-cache',
         body: JSON.stringify(data)
     })
     .then(() => {
-        // Enregistrement local pour éviter les doubles clics rapides
         localStorage.setItem('rsvp_fait', 'true');
-        
-        // Succès : on lance l'animation de fermeture
         lancerAnimationSucces();
     })
     .catch(error => {
@@ -132,26 +195,25 @@ rsvpBtn.addEventListener("click", (e) => {
 
 // 8. ANIMATION DE SORTIE
 function lancerAnimationSucces() {
-    // La carte rentre dans l'enveloppe
+    // --- FADE OUT DE LA MUSIQUE (sur 2 secondes) ---
+    fadeOutAudio(ambMusic, 7000);
+
     card.classList.remove("is-deployed");
     card.classList.add("is-reversing");
     cardState = 'closing';
 
     setTimeout(() => {
-        // Le rabat de l'enveloppe se referme
+        playWithDelay(openSfx, DELAY_CLOSE_FLAP);
         env.classList.remove("is-opened");
         
         setTimeout(() => {
-            // On cache la carte
             card.style.display = 'none';
-            // L'enveloppe revient au centre de l'écran
             env.classList.add("is-recentered");
             
             setTimeout(() => {
-                // Elle s'envole (animation CSS is-sent)
+                playWithDelay(slideSfx, DELAY_SENT_SLIDE);
                 env.classList.add("is-sent");
                 
-                // On affiche le message de remerciement final
                 setTimeout(() => {
                     thanksMsg.classList.add("is-visible");
                 }, 800);
@@ -160,7 +222,7 @@ function lancerAnimationSucces() {
     }, 600);
 }
 
-// 9. EFFET VISUEL : PARTICULES DU SCEAU
+// 9. EFFET VISUEL : PARTICULES
 function createFloatingAura() {
     const container = document.getElementById("floatingParticles");
     if(!container) return;
